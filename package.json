@@ -1,0 +1,11 @@
+{
+  "name": "huisheng-payment-tenant",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "check": "node scripts/build.mjs && node --test && node scripts/check.mjs"
+  }
+}
