@@ -1,0 +1,4 @@
+/* 壳布局补丁：仅 iframe 与覆盖层尺寸，其余全部由 Arco 组件自带样式负责 */
+.tenant-brand { display: flex; align-items: center; gap: 8px; padding: 14px 16px; }
+.frame-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--color-bg-2); z-index: 1; }
+iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--color-bg-2); }

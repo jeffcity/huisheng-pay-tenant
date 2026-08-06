@@ -1,7 +1,0 @@
-{
-  "id": "HS-TENANT",
-  "name": "汇盛支付租户端",
-  "title": "汇盛支付租户端整合 Demo",
-  "source": "src/demo.html",
-  "minimumBytes": 4000000
-}
