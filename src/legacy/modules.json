@@ -1,0 +1,180 @@
+{
+  "home": {
+    "label": "总览工作台",
+    "group": "总览",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "home"
+  },
+  "merchantList": {
+    "label": "商户管理",
+    "group": "商户运营",
+    "module": "merchants",
+    "sourceKey": "merchants",
+    "sourceName": "01-商户运营 / 01-商户管理",
+    "initialHash": "merchant-list"
+  },
+  "merchantFunding": {
+    "label": "商户资金申请",
+    "group": "商户运营",
+    "module": "merchants",
+    "sourceKey": "merchants",
+    "sourceName": "01-商户运营 / 01-商户管理",
+    "initialHash": "merchant-funding"
+  },
+  "merchantRate": {
+    "label": "商户费率",
+    "group": "商户运营",
+    "module": "merchants",
+    "sourceKey": "merchants",
+    "sourceName": "01-商户运营 / 01-商户管理",
+    "initialHash": "merchant-rate"
+  },
+  "channels": {
+    "label": "授权通道",
+    "group": "业务运营",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "channels"
+  },
+  "collect": {
+    "label": "CNY 代收订单",
+    "group": "业务运营",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "collect"
+  },
+  "payout": {
+    "label": "CNY 代付订单",
+    "group": "业务运营",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "payout"
+  },
+  "wallets": {
+    "label": "平台钱包",
+    "group": "资金中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "wallets"
+  },
+  "funds": {
+    "label": "资金申请",
+    "group": "资金中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "funds"
+  },
+  "ledger": {
+    "label": "账户流水",
+    "group": "资金中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "ledger"
+  },
+  "reconciliation": {
+    "label": "日终报表",
+    "group": "资金中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "reconciliation"
+  },
+  "reports": {
+    "label": "经营报表",
+    "group": "运营中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "reports"
+  },
+  "todos": {
+    "label": "业务待办",
+    "group": "运营中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "todos"
+  },
+  "tickets": {
+    "label": "工单协同",
+    "group": "运营中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "tickets"
+  },
+  "notifications": {
+    "label": "通知中心",
+    "group": "运营中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "notifications"
+  },
+  "settings": {
+    "label": "租户配置",
+    "group": "系统管理",
+    "module": "system",
+    "sourceKey": "system",
+    "sourceName": "05-系统管理 / 02-系统管理",
+    "initialHash": "settings"
+  },
+  "accounts": {
+    "label": "账户管理",
+    "group": "系统管理",
+    "module": "system",
+    "sourceKey": "system",
+    "sourceName": "05-系统管理 / 02-系统管理",
+    "initialHash": "accounts"
+  },
+  "roles": {
+    "label": "角色权限",
+    "group": "系统管理",
+    "module": "system",
+    "sourceKey": "system",
+    "sourceName": "05-系统管理 / 02-系统管理",
+    "initialHash": "roles"
+  },
+  "security": {
+    "label": "登录安全",
+    "group": "系统管理",
+    "module": "system",
+    "sourceKey": "system",
+    "sourceName": "05-系统管理 / 02-系统管理",
+    "initialHash": "security"
+  },
+  "audit": {
+    "label": "操作审计",
+    "group": "系统管理",
+    "module": "system",
+    "sourceKey": "system",
+    "sourceName": "05-系统管理 / 02-系统管理",
+    "initialHash": "audit"
+  },
+  "exports": {
+    "label": "导出任务",
+    "group": "公共入口",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "exports",
+    "utility": true
+  },
+  "login": {
+    "label": "登录页预览",
+    "group": "独立入口",
+    "module": "login",
+    "sourceKey": "login",
+    "sourceName": "06-登录入口 / 03-登录页",
+    "initialHash": "",
+    "utility": true
+  }
+}

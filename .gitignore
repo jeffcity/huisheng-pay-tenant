@@ -1,4 +1,6 @@
 .DS_Store
 dist/
-index.html
 node_modules/
+
+# 测试产物
+smoke-*.png
