@@ -60,10 +60,11 @@ export default function App() {
 
   const config = MODULES[activePage] || MODULES.home;
   const sourceName = config.sourceName;
+  const isAuthenticationEntry = activePage === 'login';
 
   return (
-    <Layout style={{ height: '100vh' }}>
-      <Sider width={220} style={{ display: 'flex', flexDirection: 'column' }}>
+    <Layout className={isAuthenticationEntry ? 'authentication-entry-shell' : ''} style={{ height: '100vh' }}>
+      {!isAuthenticationEntry && <Sider width={220} style={{ display: 'flex', flexDirection: 'column' }}>
         <div className="tenant-brand">
           <Tag color="arcoblue" style={{ fontWeight: 600 }}>HS</Tag>
           <span><strong>汇盛支付</strong><br /><small style={{ color: 'var(--color-text-3)' }}>租户端控制台</small></span>
@@ -94,9 +95,9 @@ export default function App() {
             </Button>
           ))}
         </div>
-      </Sider>
+      </Sider>}
       <Layout>
-        <Header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 16px' }}>
+        {!isAuthenticationEntry && <Header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 16px' }}>
           <Breadcrumb>
             <Breadcrumb.Item>租户端</Breadcrumb.Item>
             <Breadcrumb.Item>{config.group}</Breadcrumb.Item>
@@ -108,7 +109,7 @@ export default function App() {
           >
             内容来源：{sourceName}
           </span>
-        </Header>
+        </Header>}
         <Content style={{ position: 'relative', flex: 1, minHeight: 0 }}>
           {loading && !error && (
             <div className="frame-overlay"><Spin tip="正在加载专项页面" /></div>
