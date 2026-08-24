@@ -10,7 +10,7 @@ export const NAV_GROUPS = GROUP_ORDER.map(title => ({
   title,
   items: Object.entries(modules)
     .filter(([, m]) => m.group === title && !m.utility)
-    .map(([id, m]) => ({ id, label: m.label })),
+    .map(([id, m]) => ({ id, label: m.navLabel || m.label })),
 }));
 
 export const UTILITY_ITEMS = Object.entries(modules)

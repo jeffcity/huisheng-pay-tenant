@@ -1,6 +1,6 @@
 // dist 冒烟：React 壳加载 → 资金划转渲染 → 发起划转 → 2FA →
 // 提交 → 断言商户划转订单生成、账务记录保留、订单详情收敛，
-// 再验证平台钱包只展示三个钱包与多类型最近流水。
+// 再验证租户钱包只展示三个钱包与多类型最近流水。
 const puppeteer = require('puppeteer-core');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const DIST = 'file://' + process.argv[2];
@@ -18,7 +18,7 @@ const DIST = 'file://' + process.argv[2];
 
   // 切到资金划转
   await page.evaluate(() => {
-    [...document.querySelectorAll('.arco-menu-item')].find(li => li.textContent.trim() === '资金划转')?.click();
+    [...document.querySelectorAll('.arco-menu-item')].find(li => li.textContent.trim() === '商户资金划转')?.click();
   });
   await page.waitForFunction(() => {
     const crumbs = [...document.querySelectorAll('.arco-breadcrumb-item')].map(n => n.textContent.trim());
@@ -139,16 +139,16 @@ const DIST = 'file://' + process.argv[2];
     };
   }, await doc());
 
-  // 平台钱包只展示三个租户钱包，下方展示多类型最近流水。
+  // 租户钱包只展示三个钱包，下方展示多类型最近流水。
   await page.evaluate(async (d) => d.defaultView.document.getElementById('drawerClose')?.click(), await doc());
   await page.evaluate(() => {
-    [...document.querySelectorAll('.arco-menu-item')].find(li => li.textContent.trim() === '平台钱包')?.click();
+    [...document.querySelectorAll('.arco-menu-item')].find(li => li.textContent.trim() === '租户钱包')?.click();
   });
   await page.waitForFunction(() => {
     const frame = document.querySelector('iframe');
     try {
       const inner = frame?.contentDocument;
-      return [...inner?.querySelectorAll('h2') || []].some(node => node.textContent.trim() === '租户钱包')
+      return [...inner?.querySelectorAll('h1') || []].some(node => node.textContent.trim() === '租户钱包')
         && [...inner?.querySelectorAll('h2') || []].some(node => node.textContent.trim() === '最近流水');
     } catch { return false; }
   }, { timeout: 10000 });
@@ -216,7 +216,7 @@ const DIST = 'file://' + process.argv[2];
     && walletLedgerView.wallets.length > 0
     && walletLedgerView.wallets.every(wallet => wallet === 'CNY 代收钱包');
   console.log('WALLETS:', JSON.stringify(walletPage), '| FILTERED_LEDGER:', JSON.stringify(walletLedgerView));
-  console.log(pass ? 'DIST_SMOKE_PASS 资金划转与平台钱包链路完好' : 'DIST_SMOKE_FAIL');
+  console.log(pass ? 'DIST_SMOKE_PASS 资金划转与租户钱包链路完好' : 'DIST_SMOKE_FAIL');
   await page.screenshot({ path: 'smoke-dist.png' });
   await browser.close();
   process.exit(pass ? 0 : 1);

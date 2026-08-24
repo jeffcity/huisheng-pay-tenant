@@ -12,13 +12,16 @@ test("页面注册表包含 23 个页面", () => {
   assert.equal(Object.keys(modules).length, 23);
 });
 
-test("资金划转导航、登录权限与系统权限口径一致", async () => {
+test("租户钱包与商户资金划转导航口径一致", async () => {
   const [loginHtml, systemHtml, overviewHtml] = await Promise.all([
     readFile(path.join(root, "public/legacy/sources/login.html"), "utf8"),
     readFile(path.join(root, "public/legacy/sources/system.html"), "utf8"),
     readFile(path.join(root, "public/legacy/sources/overview.html"), "utf8")
   ]);
+  assert.equal(modules.wallets.label, "租户钱包");
   assert.equal(modules.funds.label, "资金划转");
+  assert.equal(modules.funds.navLabel, "商户资金划转");
+  assert.match(overviewHtml, /<h1 class="page-title">租户钱包<\/h1>/);
   assert.match(loginHtml, /id: "funding", label: "资金划转"[^\n]+tenant\.wallet_transfer\.view/);
   assert.match(systemHtml, /id:'funding',page:'资金划转'[^\n]+tenant\.wallet_transfer\.view/);
   assert.doesNotMatch(systemHtml, /id:'funding',page:'资金申请'/);
