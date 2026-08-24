@@ -21003,7 +21003,7 @@
     .wallet-activity-time { margin-top: 2px; display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-tertiary); }
     .wallet-activity-time .lucide { width: 12px; height: 12px; }
 
-    /* 平台钱包：三钱包 + 最近流水 */
+    /* 租户钱包：三钱包 + 最近钱包流水 */
     .wallet-overview { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-soft); overflow: hidden; }
     .wallet-overview-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fff 0%, #fbfcff 100%); }
     .wallet-overview-title { display: flex; align-items: center; gap: 11px; }
@@ -21021,14 +21021,17 @@
     .wallet-action-primary { border-color: var(--primary); background: var(--primary); color: #fff; font-weight: 700; }
     .wallet-action-primary:hover { border-color: var(--primary-hover); background: var(--primary-hover); color: #fff; }
     .wallet-recent-ledger { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-soft); overflow: hidden; }
-    .wallet-recent-ledger .wallet-section-head { align-items: center; padding: 17px 20px 14px; }
+    .wallet-recent-ledger .wallet-section-head { align-items: center; padding: 17px 20px; background: #f8fafc; }
     .wallet-recent-ledger .wallet-section-head h2 { font-size: 17px; }
+    .wallet-ledger-tabs { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .wallet-ledger-tab { min-width: 86px; height: 38px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text-secondary); font-weight: 700; cursor: pointer; }
+    .wallet-ledger-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .wallet-ledger-tab.active { border-color: var(--primary); color: var(--primary); box-shadow: 0 2px 8px rgba(22,93,255,.1); }
     .wallet-recent-ledger .table-wrap { border: 0; border-radius: 0; box-shadow: none; }
-    .wallet-recent-ledger .rich-table { min-width: 1240px; }
+    .wallet-recent-ledger .rich-table { min-width: 1080px; }
     .wallet-recent-ledger .rich-table th { background: #f7f9fc; }
     .wallet-recent-ledger .rich-table td { padding-top: 12px; padding-bottom: 12px; vertical-align: middle; }
-    .wallet-ledger-note { display: inline-flex; align-items: center; gap: 6px; color: var(--text-tertiary); font-size: 12px; }
-    .wallet-ledger-note .lucide { width: 14px; height: 14px; }
+    .wallet-ledger-time { white-space: nowrap; font-family: var(--mono); }
 
     @media (max-width: 1024px) {
       .wallet-pipeline { flex-wrap: wrap; gap: 14px; }
@@ -21043,7 +21046,6 @@
       .tenant-badge { max-width: calc(100% - 44px); }
       .wallet-hero { align-items: flex-start; flex-direction: column; padding: 22px; }
       .wallet-hero-side { width: 100%; min-width: 0; }
-      .wallet-role-select { width: 100%; }
       .wallet-activity-main { align-items: flex-start; flex-direction: column; gap: 2px; }
       .wallet-overview-head { align-items: flex-start; flex-direction: column; gap: 12px; }
       .wallet-overview-total { text-align: left; }
@@ -24637,6 +24639,9 @@
       sourceContext: null,
       pendingSourceNavigation: "",
       notificationSegment: "merchant",
+      walletLedgerWindow: "hour",
+      walletLedgerWallet: "",
+      walletLedgerFromCard: false,
       businessGrants: {
         collect: tenantBusinessGrantScenario === "collect-stopped" ? "stopped" : "active",
         payout: tenantBusinessGrantScenario === "payout-stopped" ? "stopped" : "active"
@@ -25744,39 +25749,30 @@
       { title: "内部划转完成", amount: "+ 50,000.00", wallet: "代付钱包", time: "今天 10:48", tone: "" },
       { title: "提款处理中", amount: "20,020.00", wallet: "提款钱包", time: "今天 09:58", tone: "warning" }
     ];
-    const walletTransferMerchants = [
-      { merchantId: "MCH-2031", merchantName: "星河游戏" },
-      { merchantId: "MCH-1188", merchantName: "东盛电商" },
-      { merchantId: "MCH-2209", merchantName: "北辰游戏" }
-    ];
     const walletTransferFacts = new Map([
       ["WTR202607200001", {
-        transferId: "WTR202607200001", correlationId: "WCOR202607200001", tenantId: "HS-TEN-001", currency: "CNY",
-        sourceMerchantId: "MCH-2031", sourceMerchantName: "星河游戏", targetMerchantId: "MCH-1188", targetMerchantName: "东盛电商",
+        transferId: "WTR202607200001", tenantId: "HS-TEN-001", currency: "CNY",
         sourceWallet: "CNY 代收钱包", targetWallet: "CNY 代付钱包", amount: 10000, purpose: "日常代付备付", status: "succeeded",
         occurredAt: "2026-07-20 11:12:26", ledgerIds: ["LG-20260720-0001-OUT", "LG-20260720-0001-IN"], idempotencyKey: "WTR-IDEM-20260720-0001", auditId: "AL-20260720-WTR-0001",
         sourceBefore: { total: 1214712.92, frozen: 249704.40, available: 965008.52, version: 53 }, sourceAfter: { total: 1204712.92, frozen: 249704.40, available: 955008.52, version: 54 },
         targetBefore: { total: 820310.88, frozen: 84630.80, available: 735680.08, version: 32 }, targetAfter: { total: 830310.88, frozen: 84630.80, available: 745680.08, version: 33 }
       }],
       ["TRF202607170018", {
-        transferId: "TRF202607170018", correlationId: "TRF202607170018", tenantId: "HS-TEN-001", currency: "CNY",
-        sourceMerchantId: "MCH-1188", sourceMerchantName: "东盛电商", targetMerchantId: "MCH-2031", targetMerchantName: "星河游戏",
+        transferId: "TRF202607170018", tenantId: "HS-TEN-001", currency: "CNY",
         sourceWallet: "CNY 代收钱包", targetWallet: "CNY 代付钱包", amount: 50000, purpose: "历史资金调拨", status: "succeeded",
         occurredAt: "2026-07-17 10:48:12", ledgerIds: ["LG202607170201", "LG202607170202"], idempotencyKey: "WTR-IDEM-20260717-0018", auditId: "AL-20260717-WTR-0018",
         sourceBefore: { total: 1258362.22, frozen: 248900, available: 1009462.22, version: 31 }, sourceAfter: { total: 1208362.22, frozen: 248900, available: 959462.22, version: 32 },
         targetBefore: { total: 770310.88, frozen: 77420, available: 692890.88, version: 28 }, targetAfter: { total: 820310.88, frozen: 77420, available: 742890.88, version: 29 }
       }],
       ["TRF202607160076", {
-        transferId: "TRF202607160076", correlationId: "WCOR202607160076", tenantId: "HS-TEN-001", currency: "CNY",
-        sourceMerchantId: "MCH-2209", sourceMerchantName: "北辰游戏", targetMerchantId: "MCH-2031", targetMerchantName: "星河游戏",
+        transferId: "TRF202607160076", tenantId: "HS-TEN-001", currency: "CNY",
         sourceWallet: "CNY 代收钱包", targetWallet: "CNY 提款钱包", amount: 25000, purpose: "补充提款可用资金", status: "succeeded",
         occurredAt: "2026-07-16 15:32:41", ledgerIds: ["LG202607160231", "LG202607160232"], idempotencyKey: "WTR-IDEM-20260716-0076", auditId: "AL-20260716-WTR-0076",
         sourceBefore: { total: 1283362.22, frozen: 248900, available: 1034462.22, version: 29 }, sourceAfter: { total: 1258362.22, frozen: 248900, available: 1009462.22, version: 30 },
         targetBefore: { total: 295000, frozen: 0, available: 295000, version: 18 }, targetAfter: { total: 320000, frozen: 0, available: 320000, version: 19 }
       }],
       ["TRF202607150041", {
-        transferId: "TRF202607150041", correlationId: "WCOR202607150041", tenantId: "HS-TEN-001", currency: "CNY",
-        sourceMerchantId: "MCH-2031", sourceMerchantName: "星河游戏", targetMerchantId: "MCH-2209", targetMerchantName: "北辰游戏",
+        transferId: "TRF202607150041", tenantId: "HS-TEN-001", currency: "CNY",
         sourceWallet: "CNY 代付钱包", targetWallet: "CNY 提款钱包", amount: 12000, purpose: "提款资金准备", status: "succeeded",
         occurredAt: "2026-07-15 09:18:06", ledgerIds: ["LG202607150119", "LG202607150120"], idempotencyKey: "WTR-IDEM-20260715-0041", auditId: "AL-20260715-WTR-0041",
         sourceBefore: { total: 782310.88, frozen: 77420, available: 704890.88, version: 25 }, sourceAfter: { total: 770310.88, frozen: 77420, available: 692890.88, version: 26 },
@@ -27303,11 +27299,11 @@
       return value ? JSON.parse(JSON.stringify(value)) : value;
     }
 
-    function walletTransferFingerprint({ sourceMerchantId, targetMerchantId, sourceWallet, targetWallet, amount, purpose }) {
-      return JSON.stringify({ tenantId: "HS-TEN-001", sourceMerchantId, targetMerchantId, currency: "CNY", sourceWallet, targetWallet, amount: Number(amount).toFixed(2), purpose: String(purpose || "").trim() });
+    function walletTransferFingerprint({ sourceWallet, targetWallet, amount, purpose }) {
+      return JSON.stringify({ tenantId: "HS-TEN-001", currency: "CNY", sourceWallet, targetWallet, amount: Number(amount).toFixed(2), purpose: String(purpose || "").trim() });
     }
 
-    function walletTransferLedgerRow({ ledgerId, walletName, direction, amount, before, after, correlationId, pairedLedgerId, occurredAt, merchantId, merchantName }) {
+    function walletTransferLedgerRow({ ledgerId, walletName, direction, amount, before, after, transferId, pairedLedgerId, occurredAt }) {
       const increase = direction === "增加";
       return [
         `<span class="mono">${escapeHtml(ledgerId)}</span>`, walletName,
@@ -27316,37 +27312,33 @@
         `<span class="mono">${formatMoney(before.total)} → ${formatMoney(after.total)}</span>`,
         `<span class="mono">${formatMoney(before.frozen)} → ${formatMoney(after.frozen)}</span>`,
         `<span class="mono">${formatMoney(before.available)} → ${formatMoney(after.available)}</span>`,
-        `<div class="stack"><span class="mono">${escapeHtml(correlationId)}</span><span class="muted">对应 ${escapeHtml(pairedLedgerId)}</span><span class="muted">${escapeHtml(merchantName || "-")} · ${escapeHtml(merchantId || "-")}</span></div>`,
+        `<div class="stack"><span class="mono">${escapeHtml(transferId)}</span><span class="muted">对应 ${escapeHtml(pairedLedgerId)}</span></div>`,
         occurredAt,
         `<button class="btn-link" type="button" data-action="ledger-detail">详情</button>`
       ];
     }
 
     function executeWalletTransfer(input = {}) {
-      const sourceMerchantId = String(input.sourceMerchantId || input.merchantId || "").trim();
-      const targetMerchantId = String(input.targetMerchantId || input.merchantId || "").trim();
-      const sourceMerchant = walletTransferMerchants.find((item) => item.merchantId === sourceMerchantId);
-      const targetMerchant = walletTransferMerchants.find((item) => item.merchantId === targetMerchantId);
       const sourceWalletName = String(input.sourceWallet || input.source || "");
       const targetWalletName = String(input.targetWallet || input.target || "");
       const amount = Number(input.amount);
       const purpose = String(input.purpose || "").trim();
       const idempotencyKey = String(input.idempotencyKey || "").trim();
-      const fingerprint = walletTransferFingerprint({ sourceMerchantId, targetMerchantId, sourceWallet: sourceWalletName, targetWallet: targetWalletName, amount, purpose });
+      const fingerprint = walletTransferFingerprint({ sourceWallet: sourceWalletName, targetWallet: targetWalletName, amount, purpose });
       const previous = walletTransferIdempotency.get(idempotencyKey);
       if (!idempotencyKey) return { ok: false, code: "IDEMPOTENCY_KEY_REQUIRED", message: "缺少本次划转的幂等标识。" };
       if (previous) {
         if (previous.fingerprint !== fingerprint) return { ok: false, code: "IDEMPOTENCY_CONFLICT", message: "相同提交标识的核心字段已经变化，原划转保持不变。" };
         return { ...cloneWalletTransfer(previous.result), ok: true, duplicate: true };
       }
-      if (!sourceMerchant || !targetMerchant) return { ok: false, code: "MERCHANT_REQUIRED", message: "请选择来源与目标商户钱包。" };
-      if (![sourceMerchantId, targetMerchantId].every((merchantId) => currentTenantAccount.authorizedMerchantIds.includes(merchantId))) return { ok: false, code: "MERCHANT_SCOPE_DENIED", message: "当前账号无权操作所选来源或目标商户的钱包。" };
       if (input.authorized === false) return { ok: false, code: "PERMISSION_DENIED", message: "当前账号没有内部划转权限。" };
       if (input.twoFactorVerified === false) return { ok: false, code: "SECOND_FACTOR_INVALID", message: "Google 2FA 验证失败。" };
       const sourceWallet = walletShowcaseData[sourceWalletName];
       const targetWallet = walletShowcaseData[targetWalletName];
       if (!sourceWallet || !targetWallet) return { ok: false, code: "WALLET_NOT_FOUND", message: "来源或目标钱包不存在。" };
-      const allowed = (sourceWalletName === "CNY 代收钱包" && ["CNY 代付钱包", "CNY 提款钱包"].includes(targetWalletName)) || (sourceWalletName === "CNY 代付钱包" && targetWalletName === "CNY 提款钱包");
+      const allowed = sourceWalletName !== targetWalletName
+        && ["CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"].includes(sourceWalletName)
+        && ["CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"].includes(targetWalletName);
       if (!allowed || sourceWalletName === targetWalletName) return { ok: false, code: "WALLET_TRANSFER_PATH_INVALID", message: "该钱包划转路径不允许。" };
       if (!Number.isFinite(amount) || amount <= 0 || Math.abs(amount * 100 - Math.round(amount * 100)) > 1e-8) return { ok: false, code: "AMOUNT_INVALID", message: "金额必须大于 0 且最多两位小数。" };
       if (purpose.length < 2 || purpose.length > 100) return { ok: false, code: "PURPOSE_INVALID", message: "用途说明须为 2 至 100 字。" };
@@ -27357,8 +27349,7 @@
         return { ok: false, code: "STATE_VERSION_CONFLICT", message: "钱包余额或状态已经变化，请刷新后重新确认。", currentSourceVersion: sourceWallet.version, currentTargetVersion: targetWallet.version };
       }
       if (amount > walletAvailable(sourceWalletName)) return { ok: false, code: "BALANCE_INSUFFICIENT", message: `来源可用余额不足，还差 CNY ${formatMoney(amount - walletAvailable(sourceWalletName))}。` };
-      if (input.transferId && walletTransferFacts.has(String(input.transferId))) return { ok: false, code: "TRANSFER_ID_CONFLICT", message: "划转编号已经存在，请查询原划转。" };
-      if (input.correlationId && [...walletTransferFacts.values()].some(item => item.correlationId === String(input.correlationId))) return { ok: false, code: "CORRELATION_ID_CONFLICT", message: "划转关联号已经存在，请查询原划转。" };
+      if (input.transferId && walletTransferFacts.has(String(input.transferId))) return { ok: false, code: "TRANSFER_ID_CONFLICT", message: "划转单号已经存在，请查询原划转。" };
       if (Array.isArray(input.ledgerIds) && input.ledgerIds.some(ledgerId => modulePages["账户流水"].rows.some(row => String(row[0]).includes(String(ledgerId))))) return { ok: false, code: "LEDGER_ID_CONFLICT", message: "双边流水号已经存在，请查询原划转。" };
 
       const sourceBefore = walletSnapshot(sourceWallet);
@@ -27371,14 +27362,11 @@
       const targetAfter = walletSnapshot(targetWallet);
       const sequence = String(walletTransferSequence++).padStart(4, "0");
       const transferId = String(input.transferId || `WTR20260720${sequence}`);
-      const correlationId = String(input.correlationId || `WCOR20260720${sequence}`);
       const ledgerIds = Array.isArray(input.ledgerIds) && input.ledgerIds.length === 2 ? input.ledgerIds.map(String) : [`LG-20260720-${sequence}-OUT`, `LG-20260720-${sequence}-IN`];
       const occurredAt = String(input.occurredAt || "2026-07-20 14:20:00");
       const auditId = String(input.auditId || `AL-20260720-WTR-${sequence}`);
       const result = {
-        ok: true, duplicate: false, status: "succeeded", transferId, correlationId, tenantId: "HS-TEN-001", currency: "CNY",
-        sourceMerchantId: sourceMerchant.merchantId, sourceMerchantName: sourceMerchant.merchantName,
-        targetMerchantId: targetMerchant.merchantId, targetMerchantName: targetMerchant.merchantName,
+        ok: true, duplicate: false, status: "succeeded", transferId, tenantId: "HS-TEN-001", currency: "CNY",
         sourceWallet: sourceWalletName, targetWallet: targetWalletName, amount, purpose, idempotencyKey,
         expectedSourceVersion, expectedTargetVersion, sourceBefore, sourceAfter, targetBefore, targetAfter,
         ledgerIds, auditId, occurredAt
@@ -27388,8 +27376,8 @@
       targetWallet.recent = `内部划转 + CNY ${formatMoney(amount)}`;
       targetWallet.recentTime = occurredAt;
       walletShowcaseActivity.unshift({ title: "内部划转完成", amount: `+ ${formatMoney(amount)}`, wallet: targetWallet.name, time: occurredAt, tone: "" });
-      const sourceLedger = { ledgerId: ledgerIds[0], walletName: sourceWalletName, direction: "减少", amount, before: sourceBefore, after: sourceAfter, correlationId, pairedLedgerId: ledgerIds[1], occurredAt, transferId, merchantId: sourceMerchant.merchantId, merchantName: sourceMerchant.merchantName };
-      const targetLedger = { ledgerId: ledgerIds[1], walletName: targetWalletName, direction: "增加", amount, before: targetBefore, after: targetAfter, correlationId, pairedLedgerId: ledgerIds[0], occurredAt, transferId, merchantId: targetMerchant.merchantId, merchantName: targetMerchant.merchantName };
+      const sourceLedger = { ledgerId: ledgerIds[0], walletName: sourceWalletName, direction: "减少", amount, before: sourceBefore, after: sourceAfter, pairedLedgerId: ledgerIds[1], occurredAt, transferId };
+      const targetLedger = { ledgerId: ledgerIds[1], walletName: targetWalletName, direction: "增加", amount, before: targetBefore, after: targetAfter, pairedLedgerId: ledgerIds[0], occurredAt, transferId };
       walletTransferLedgerRows.unshift(sourceLedger, targetLedger);
       modulePages["账户流水"].rows.unshift(walletTransferLedgerRow(sourceLedger), walletTransferLedgerRow(targetLedger));
       walletTransferFacts.set(transferId, cloneWalletTransfer(result));
@@ -27432,20 +27420,20 @@
     function walletTransferOrderPage() {
       const records = walletTransferRecords();
       const totalAmount = records.reduce((sum, record) => sum + Number(record.amount || 0), 0);
-      const pathCount = new Set(records.map((record) => `${record.sourceMerchantId}/${record.sourceWallet}->${record.targetMerchantId}/${record.targetWallet}`)).size;
+      const pathCount = new Set(records.map((record) => `${record.sourceWallet}->${record.targetWallet}`)).size;
       return {
         title: "资金划转",
-        subtitle: "查询当前租户授权商户钱包之间的内部划转订单。",
+        subtitle: "查询当前租户三个 CNY 钱包之间的内部划转订单。",
         metrics: [
           ["划转订单", String(records.length), "当前租户"],
           ["成功金额", `CNY ${formatMoney(totalAmount)}`, "实时完成"],
-          ["已用账户路径", `${pathCount} 条`, "钱包方向共 3 种"],
+          ["已用钱包路径", `${pathCount} 条`, "钱包方向共 6 种"],
           ["平台审核", "不需要", "提交后原子执行"]
         ],
         filters: [
-          { label: "划转编号 / 关联号", placeholder: "请输入划转编号或关联号", column: 0 },
-          { label: "来源商户 / 钱包", type: "select", options: ["全部来源", ...walletTransferAccounts(["CNY 代收钱包", "CNY 代付钱包"]).map((item) => `${item.merchantName} ${item.merchantId} / ${item.walletName}`)], column: 1 },
-          { label: "目标商户 / 钱包", type: "select", options: ["全部目标", ...walletTransferAccounts(["CNY 代付钱包", "CNY 提款钱包"]).map((item) => `${item.merchantName} ${item.merchantId} / ${item.walletName}`)], column: 2 },
+          { label: "划转单号", placeholder: "请输入划转单号", column: 0 },
+          { label: "来源钱包", type: "select", options: ["全部来源", "CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"], column: 1 },
+          { label: "目标钱包", type: "select", options: ["全部目标", "CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"], column: 2 },
           { label: "订单状态", type: "select", options: ["全部状态", "成功"], column: 4 },
           { label: "完成时间", type: "date", column: 6 }
         ],
@@ -27456,25 +27444,85 @@
           { label: "导出划转订单", icon: "download", action: "export" }
         ],
         summary: [
-          ["本页对象", "商户钱包划转", "positive"],
+          ["本页对象", "租户钱包划转", "positive"],
           ["币种", "仅 CNY", "positive"],
           ["执行方式", "实时完成", "positive"],
-          ["账户归属", "双端记录", "positive"]
+          ["钱包范围", "当前租户三钱包", "positive"]
         ],
-        tableHint: "每笔划转分别记录来源商户钱包与目标商户钱包；允许代收钱包转代付或提款、代付钱包转提款，提款钱包不可反向划转。",
-        tableMinWidth: 1660,
-        columns: ["划转编号 / 关联号", "来源商户 / 钱包", "目标商户 / 钱包", "划转金额 / 手续费", "订单状态 / 执行方式", "用途说明", "完成时间", "操作"],
+        tableHint: "三个租户钱包可双向划转，来源与目标不得为同一钱包。",
+        tableMinWidth: 1420,
+        columns: ["划转单号", "来源钱包", "目标钱包", "划转金额 / 手续费", "订单状态", "用途说明", "完成时间", "操作"],
         rows: records.map((record) => [
-          `<div class="stack"><strong class="mono">${escapeHtml(record.transferId)}</strong><span class="mono muted">${escapeHtml(record.correlationId)}</span></div>`,
-          `<div class="stack"><strong>${escapeHtml(record.sourceMerchantName || "-")}</strong> <span class="muted"><span class="mono">${escapeHtml(record.sourceMerchantId || "-")}</span> / ${escapeHtml(record.sourceWallet)}</span></div>`,
-          `<div class="stack"><strong>${escapeHtml(record.targetMerchantName || "-")}</strong> <span class="muted"><span class="mono">${escapeHtml(record.targetMerchantId || "-")}</span> / ${escapeHtml(record.targetWallet)}</span></div>`,
+          `<strong class="mono">${escapeHtml(record.transferId)}</strong>`,
+          escapeHtml(record.sourceWallet),
+          escapeHtml(record.targetWallet),
           `<div class="stack"><strong class="mono">CNY ${formatMoney(record.amount)}</strong><span class="muted">手续费 CNY 0.00</span></div>`,
-          `<div class="stack"><span class="tag ${record.status === "succeeded" ? "tag-green" : "tag-orange"}">${record.status === "succeeded" ? "成功" : escapeHtml(record.status)}</span><span class="muted">实时执行，无平台审核</span></div>`,
+          `<span class="tag ${record.status === "succeeded" ? "tag-green" : "tag-orange"}">${record.status === "succeeded" ? "成功" : escapeHtml(record.status)}</span>`,
           escapeHtml(record.purpose || "-"),
           `<span class="mono">${escapeHtml(record.occurredAt)}</span>`,
           `<div class="cell-actions"><button class="btn-link" type="button" data-action="transfer-detail" data-transfer="${escapeHtml(record.transferId)}">详情</button></div>`
         ])
       };
+    }
+
+    function walletLedgerPlainText(value) {
+      return String(value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function walletLedgerDirectionTag(value) {
+      const markup = String(value || "");
+      const match = markup.match(/<span class="tag [^"]*">([^<]+)<\/span>/);
+      const aliases = { "收入": "增加", "支出": "减少" };
+      const label = aliases[match?.[1]] || match?.[1] || "-";
+      const tone = label === "增加" ? "tag-green" : label === "减少" ? "tag-red" : label === "冻结" ? "tag-orange" : label === "解冻" ? "tag-blue" : "tag-gray";
+      return `<span class="tag ${tone}">${escapeHtml(label)}</span>`;
+    }
+
+    function walletLedgerRows(windowKey = state.walletLedgerWindow, walletName = "") {
+      const rows = [...modulePages["账户流水"].rows]
+        .filter((row) => !String(row[2] || "").includes("风险冻结"))
+        .filter((row) => !walletName || String(row[1] || "") === walletName)
+        .sort((a, b) => String(b[8] || "").localeCompare(String(a[8] || "")));
+      if (windowKey === "hour") return rows.slice(0, 3);
+      if (windowKey === "today") return rows.slice(0, 8);
+      return rows.filter((row) => String(row[8] || "").startsWith("2026-07-16")).slice(0, 8);
+    }
+
+    function renderWalletLedgerPanel(walletName = "") {
+      const rows = walletLedgerRows(state.walletLedgerWindow, walletName);
+      const afterBalance = (row) => walletLedgerPlainText(row[4]).split("→").pop().trim() || "-";
+      const relation = (row) => walletLedgerPlainText(row[7]).split(" ")[0] || "-";
+      return `
+        <section class="wallet-recent-ledger" aria-label="最近钱包流水" data-wallet-ledger-wallet="${escapeHtml(walletName)}">
+          <div class="wallet-section-head">
+            <div><h2>最近钱包流水</h2>${walletName ? `<p class="panel-subtitle">${escapeHtml(walletName.replace(/^CNY /, ""))}</p>` : ""}</div>
+          </div>
+          <div class="wallet-ledger-tabs" role="tablist" aria-label="流水时间范围">
+            ${[["hour", "近一小时"], ["today", "今日"], ["yesterday", "昨日"]].map(([value, label]) => `<button class="wallet-ledger-tab ${state.walletLedgerWindow === value ? "active" : ""}" type="button" role="tab" aria-selected="${state.walletLedgerWindow === value}" data-action="wallet-ledger-window" data-window="${value}">${label}</button>`).join("")}
+          </div>
+          <div class="table-wrap">
+            <table class="rich-table">
+              <thead><tr><th>流水单号</th><th>时间</th><th>钱包</th><th>类型</th><th>金额</th><th>变动后余额</th><th>关联单号</th></tr></thead>
+              <tbody>${rows.map((row) => `<tr><td>${row[0]}</td><td><span class="wallet-ledger-time">${escapeHtml(String(row[8] || "").slice(11) || "-")}</span></td><td>${escapeHtml(String(row[1] || "").replace(/^CNY /, ""))}</td><td>${walletLedgerDirectionTag(row[2])}</td><td>${row[3]}</td><td><strong class="mono">CNY ${escapeHtml(afterBalance(row))}</strong></td><td><span class="mono">${escapeHtml(relation(row))}</span></td></tr>`).join("") || `<tr><td colspan="7"><div class="module-empty-row"><strong>暂无流水</strong><span>当前时间范围内暂无钱包资金变动。</span></div></td></tr>`}</tbody>
+            </table>
+          </div>
+        </section>`;
+    }
+
+    function renderWalletLedgerPage() {
+      const walletName = state.walletLedgerWallet;
+      return `
+        <section class="page-head" data-astryx="PageHeader">
+          <div>
+            <h1 class="page-title">账户流水</h1>
+            <p class="page-subtitle">${walletName ? `查看${escapeHtml(walletName.replace(/^CNY /, ""))}的资金变动。` : "查看当前租户三个钱包的资金变动。"}</p>
+          </div>
+          <div class="page-actions" data-astryx="ActionGroup">
+            ${walletName ? `<button class="btn" type="button" data-action="back-to-wallets"><i data-lucide="arrow-left"></i>返回租户钱包</button>` : ""}
+            <button class="btn" type="button" data-action="refresh-page"><i data-lucide="refresh-cw"></i>刷新</button>
+          </div>
+        </section>
+        ${renderWalletLedgerPanel(walletName)}`;
     }
 
     function renderWalletShowcasePage() {
@@ -27490,7 +27538,6 @@
         const available = formatMoney(wallet.total - wallet.frozen);
         const statusMeta = walletStatusMeta(wallet.status);
         const isActive = wallet.status === "active";
-        const isWithdraw = source === "CNY 提款钱包";
         return `
         <article class="wallet-pipe-node wallet-pipe-node--${tone}${statusMeta.cardCls ? ` ${statusMeta.cardCls}` : ""}">
           <div class="wallet-pipe-head">
@@ -27510,29 +27557,20 @@
           </dl>
           ${!isActive && statusMeta.note ? `<p class="modal-note" style="margin:0;">${statusMeta.note}</p>` : ""}
           <div class="wallet-pipe-actions">
-            ${!isWithdraw && canTransfer && isActive ? `<button class="btn wallet-action-primary" type="button" data-action="internal-transfer" data-source="${source}"><i data-lucide="arrow-left-right"></i>发起划转</button>` : ""}
-            ${isWithdraw && canTransfer && isActive ? `<button class="btn wallet-btn-withdraw" type="button" data-action="create-withdrawal"><i data-lucide="banknote"></i>发起提现</button>` : ""}
+            ${canTransfer && isActive ? `<button class="btn wallet-action-primary" type="button" data-action="internal-transfer" data-source="${source}"><i data-lucide="arrow-left-right"></i>发起划转</button>` : ""}
             <button class="btn" type="button" data-action="wallet-ledger" data-wallet="${source}">流水</button>
           </div>
         </article>`;
       };
 
-      const recentLedgerRows = [...modulePages["账户流水"].rows]
-        .filter((row) => !String(row[2] || "").includes("风险冻结"))
-        .sort((a, b) => String(b[8] || "").localeCompare(String(a[8] || "")))
-        .slice(0, 8);
-
       return `
-        <section class="wallet-showcase" aria-label="平台钱包概览">
+        <section class="wallet-showcase" aria-label="租户钱包概览">
           <section class="page-head" data-astryx="PageHeader">
             <div>
               <h1 class="page-title">租户钱包</h1>
               <p class="page-subtitle">查看当前租户的 CNY 代收、代付和提款钱包。</p>
             </div>
             <div class="page-actions" data-astryx="ActionGroup">
-              <select class="select wallet-role-select" data-wallet-role aria-label="切换演示角色">
-                ${Object.entries(walletRoleProfiles).map(([key, profile]) => `<option value="${key}" ${currentTenantAccount.role === key ? "selected" : ""}>演示角色：${profile.label}</option>`).join("")}
-              </select>
               <button class="btn" type="button" data-action="refresh-page"><i data-lucide="refresh-cw"></i>刷新</button>
             </div>
           </section>
@@ -27556,18 +27594,7 @@
             </div>
           </section>
 
-          <section class="wallet-recent-ledger" aria-label="最近流水">
-            <div class="wallet-section-head">
-              <div><h2>最近流水</h2><p>最近 8 笔钱包资金变动，包含代收、代付、提款、退款、人工调整与内部划转</p></div>
-              <span class="wallet-ledger-note"><i data-lucide="clock-3"></i>UTC+8</span>
-            </div>
-            <div class="table-wrap">
-              <table class="rich-table">
-                <thead><tr><th>流水号</th><th>钱包</th><th>类型 / 方向</th><th>变动金额</th><th>关联业务 / 结果来源</th><th>发生时间</th><th>操作</th></tr></thead>
-                <tbody>${recentLedgerRows.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[7]}</td><td><span class="mono">${row[8]}</span></td><td>${row[9]}</td></tr>`).join("") || `<tr><td colspan="7"><div class="module-empty-row"><strong>暂无流水</strong><span>钱包发生资金变动后将在这里展示。</span></div></td></tr>`}</tbody>
-              </table>
-            </div>
-          </section>
+          ${renderWalletLedgerPanel()}
         </section>
       `;
     }
@@ -27576,12 +27603,12 @@
       const transferId = trigger.dataset.transfer || "";
       const record = walletTransferFacts.get(transferId);
       if (!record) {
-        showToast("未找到该划转编号的记录");
+        showToast("未找到该划转单号的记录");
         return;
       }
       document.getElementById("drawerTitle").textContent = `划转详情 · ${transferId}`;
       document.getElementById("drawerBody").innerHTML = `
-        ${detailSection("划转信息", `状态：${record.status === "succeeded" ? "成功" : record.status}`, [["划转编号", record.transferId], ["关联号", record.correlationId], ["来源商户 / 钱包", `${record.sourceMerchantName || "-"} · ${record.sourceMerchantId || "-"} / ${record.sourceWallet}`], ["目标商户 / 钱包", `${record.targetMerchantName || "-"} · ${record.targetMerchantId || "-"} / ${record.targetWallet}`], ["划转金额", `CNY ${formatMoney(record.amount)}`], ["手续费", "CNY 0.00"], ["用途说明", record.purpose || "-"], ["完成时间", `${record.occurredAt} UTC+8`]])}`;
+        ${detailSection("划转信息", `状态：${record.status === "succeeded" ? "成功" : record.status}`, [["划转单号", record.transferId], ["来源钱包", record.sourceWallet], ["目标钱包", record.targetWallet], ["划转金额", `CNY ${formatMoney(record.amount)}`], ["手续费", "CNY 0.00"], ["用途说明", record.purpose || "-"], ["完成时间", `${record.occurredAt} UTC+8`]])}`;
       openDrawer();
     }
 
@@ -27622,6 +27649,7 @@
 
     function renderModulePage(pageName) {
       if (pageName === "平台钱包") return renderWalletShowcasePage();
+      if (pageName === "账户流水") return renderWalletLedgerPage();
       if (pageName === "法币代收订单" || pageName === "法币代付订单") return renderBlueTenantOrderPage(pageName);
       if (pageName === "全局订单追踪") return renderTenantGlobalOrderTrackingPage();
       const page = pageName === "资金划转"
@@ -29151,7 +29179,7 @@
         title = `平台钱包详情 · ${value(0)}`;
         intro = "本页只展示租户在平台的 CNY 钱包，商户钱包不在平台账本；任何改账都必须由已确认业务或资金申请生成不可覆盖流水。";
         body += detailSection("余额构成", "可用余额始终等于总额减冻结金额", [["钱包 / 币种", value(0)], ["当前总额", value(1)], ["冻结金额", value(2)], ["可用余额", value(3)], ["状态", value(5)], ["最近资金操作", value(6)]]);
-        body += detailSection("操作边界", "详情不提供直接加款、扣款、冻结、解冻或改余额", [["可转入", value(4)], ["内部划转", "只使用来源可用余额，实时生成同关联号双边流水，无需平台审核"], ["提款钱包", "不可反向划转；真正提款需要提交租户提款申请并由平台审核"], ["待处理金额", "不计入总额、冻结或可用余额字段"]]);
+        body += detailSection("操作边界", "详情不提供直接加款、扣款、冻结、解冻或改余额", [["可转入", value(4)], ["内部划转", "只使用来源可用余额，实时生成共用划转单号的双边流水，无需平台审核"], ["提款钱包", "不可反向划转；真正提款需要提交租户提款申请并由平台审核"], ["待处理金额", "不计入总额、冻结或可用余额字段"]]);
         actions = detailSourceButton("账户流水", value(0), "查看钱包流水", 1);
       } else if (action === "channel-detail") {
         title = `授权通道详情 · ${value(0)}`;
@@ -29448,8 +29476,6 @@
       const targetWallet = walletShowcaseData[target];
       if (!sourceWallet || !targetWallet) return false;
       return executeWalletTransfer({
-        sourceMerchantId: currentTenantAccount.authorizedMerchantIds[0],
-        targetMerchantId: currentTenantAccount.authorizedMerchantIds[1] || currentTenantAccount.authorizedMerchantIds[0],
         sourceWallet: source,
         targetWallet: target,
         amount,
@@ -29640,27 +29666,11 @@
     }
 
     function transferTargets(source) {
-      return source === "CNY 代付钱包" ? ["CNY 提款钱包"] : ["CNY 代付钱包", "CNY 提款钱包"];
+      return ["CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"].filter((walletName) => walletName !== source);
     }
 
-    function walletTransferAccountValue(merchantId, walletName) {
-      return `${merchantId}::${walletName}`;
-    }
-
-    function parseWalletTransferAccount(value) {
-      const [merchantId = "", walletName = ""] = String(value || "").split("::");
-      const merchant = walletTransferMerchants.find((item) => item.merchantId === merchantId);
-      return merchant && walletName ? { merchantId, merchantName: merchant.merchantName, walletName } : null;
-    }
-
-    function walletTransferAccounts(walletNames) {
-      return walletTransferMerchants
-        .filter((merchant) => currentTenantAccount.authorizedMerchantIds.includes(merchant.merchantId))
-        .flatMap((merchant) => walletNames.map((walletName) => ({ ...merchant, walletName, value: walletTransferAccountValue(merchant.merchantId, walletName), label: `${merchant.merchantName} · ${merchant.merchantId} / ${walletName}` })));
-    }
-
-    function walletTransferAccountOptions(walletNames) {
-      return walletTransferAccounts(walletNames).map((account) => `<option value="${escapeHtml(account.value)}">${escapeHtml(account.label)}</option>`).join("");
+    function walletTransferOptions(walletNames) {
+      return walletNames.map((walletName) => `<option value="${escapeHtml(walletName)}">${escapeHtml(walletName)}</option>`).join("");
     }
 
     function setupTransferForm() {
@@ -29671,17 +29681,14 @@
       if (!source || !target) return;
       const refreshTargets = () => {
         const current = target.value;
-        const sourceAccount = parseWalletTransferAccount(source.value);
-        const targetAccounts = sourceAccount ? walletTransferAccounts(transferTargets(sourceAccount.walletName)) : [];
-        target.innerHTML = `<option value="">请选择目标商户及钱包</option>${targetAccounts.map((account) => `<option value="${escapeHtml(account.value)}">${escapeHtml(account.label)}</option>`).join("")}`;
-        target.disabled = !sourceAccount;
-        if (targetAccounts.some((account) => account.value === current)) target.value = current;
+        const targetWallets = source.value ? transferTargets(source.value) : [];
+        target.innerHTML = `<option value="">请选择目标钱包</option>${walletTransferOptions(targetWallets)}`;
+        target.disabled = !source.value;
+        if (targetWallets.includes(current)) target.value = current;
       };
       const refreshVersions = () => {
-        const sourceAccount = parseWalletTransferAccount(source.value);
-        const targetAccount = parseWalletTransferAccount(target.value);
-        const sourceWallet = walletShowcaseData[sourceAccount?.walletName];
-        const targetWallet = walletShowcaseData[targetAccount?.walletName];
+        const sourceWallet = walletShowcaseData[source.value];
+        const targetWallet = walletShowcaseData[target.value];
         if (sourceVersion) sourceVersion.value = String(sourceWallet?.version ?? "");
         if (targetVersion) targetVersion.value = String(targetWallet?.version ?? "");
       };
@@ -29933,12 +29940,14 @@
           </div>`;
       } else if (kind === "internal-transfer") {
         const requestKey = `TENANT-WTR-${String(walletTransferUiSequence++).padStart(4, "0")}`;
-        title = "发起商户钱包划转";
+        const fixedSource = trigger?.dataset.source && walletShowcaseData[trigger.dataset.source] ? trigger.dataset.source : "";
+        title = fixedSource ? `从${fixedSource.replace(/^CNY /, "")}发起划转` : "发起钱包划转";
         confirmText = "确认划转";
         body = `
           <div class="modal-grid">
-            <div class="field"><label for="transferSource">来源商户 / 钱包</label><select class="select" id="transferSource"><option value="">请选择来源商户及钱包</option>${walletTransferAccountOptions(["CNY 代收钱包", "CNY 代付钱包"])}</select></div>
-            <div class="field"><label for="transferTarget">目标商户 / 钱包</label><select class="select" id="transferTarget" disabled><option value="">请先选择来源商户及钱包</option></select></div>
+            ${fixedSource
+              ? `<input type="hidden" id="transferSource" value="${escapeHtml(fixedSource)}"><div class="field full"><label for="transferTarget">目标钱包</label><select class="select" id="transferTarget"><option value="">请选择目标钱包</option>${walletTransferOptions(transferTargets(fixedSource))}</select></div>`
+              : `<div class="field"><label for="transferSource">来源钱包</label><select class="select" id="transferSource"><option value="">请选择来源钱包</option>${walletTransferOptions(["CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"])}</select></div><div class="field"><label for="transferTarget">目标钱包</label><select class="select" id="transferTarget" disabled><option value="">请先选择来源钱包</option></select></div>`}
             <div class="field"><label for="transferAmount">划转金额</label><input class="input mono" id="transferAmount" inputmode="decimal" pattern="[0-9]+([.][0-9]{1,2})?" data-cny-amount value="1000.00" placeholder="CNY 金额，最多两位小数"></div>
             <div class="field"><label for="transferReason">用途说明</label><input class="input" id="transferReason" value="日常资金调拨" maxlength="100"></div>
             <div class="field full"><label for="twoFactorCode">Google 2FA 验证码</label><input class="input mono" id="twoFactorCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="请输入 6 位验证码"></div>
@@ -30327,12 +30336,12 @@
 
       if (kind === "internal-transfer") {
         if (!document.getElementById("transferSource")?.value) {
-          showToast("请选择来源商户及钱包");
+          showToast("请选择来源钱包");
           document.getElementById("transferSource")?.focus();
           return;
         }
         if (!document.getElementById("transferTarget")?.value) {
-          showToast("请选择目标商户及钱包");
+          showToast("请选择目标钱包");
           document.getElementById("transferTarget")?.focus();
           return;
         }
@@ -30352,10 +30361,8 @@
       if (kind === "internal-transfer") {
         const sourceField = document.getElementById("transferSource");
         const targetField = document.getElementById("transferTarget");
-        const sourceAccount = parseWalletTransferAccount(sourceField.value);
-        const targetAccount = parseWalletTransferAccount(targetField.value);
-        const source = sourceAccount?.walletName || "";
-        const target = targetAccount?.walletName || "";
+        const source = sourceField.value;
+        const target = targetField.value;
         const amount = parseCnyInput(document.getElementById("transferAmount").value);
         const reason = document.getElementById("transferReason").value.trim();
         const idempotencyKey = document.getElementById("transferIdempotencyKey").value;
@@ -30363,9 +30370,9 @@
         const expectedTargetVersion = Number(document.getElementById("transferExpectedTargetVersion").value);
         const code = document.getElementById("twoFactorCode").value.trim();
         const available = walletAvailable(source);
-        if (!sourceAccount || !targetAccount) {
-          showToast("请选择完整的来源与目标商户钱包");
-          (sourceAccount ? targetField : sourceField).focus();
+        if (!source || !target) {
+          showToast("请选择来源与目标钱包");
+          (source ? targetField : sourceField).focus();
           return;
         }
         if (!transferTargets(source).includes(target) || source === target) {
@@ -30386,12 +30393,12 @@
           document.getElementById("transferReason").focus();
           return;
         }
-        const result = executeWalletTransfer({ sourceMerchantId: sourceAccount.merchantId, targetMerchantId: targetAccount.merchantId, sourceWallet: source, targetWallet: target, amount, purpose: reason, idempotencyKey, expectedSourceVersion, expectedTargetVersion, authorized: currentTenantAccount.canTransfer, twoFactorVerified: code === currentTenantAccount.google2fa });
+        const result = executeWalletTransfer({ sourceWallet: source, targetWallet: target, amount, purpose: reason, idempotencyKey, expectedSourceVersion, expectedTargetVersion, authorized: currentTenantAccount.canTransfer, twoFactorVerified: code === currentTenantAccount.google2fa });
         if (!result.ok) {
           showTenantOperationFeedback({ tone: "error", title: `${result.code} · 划转未执行`, message: `${result.message} 两边钱包和流水均未变化。`, action: result.code === "STATE_VERSION_CONFLICT" ? "refresh" : "" });
           return;
         }
-        recordTenantFact({ title: "商户钱包内部划转完成", object: result.transferId, status: `${result.sourceMerchantName} · ${result.sourceMerchantId} / ${result.sourceWallet} → ${result.targetMerchantName} · ${result.targetMerchantId} / ${result.targetWallet} · CNY ${formatMoney(amount)} · ${result.correlationId}`, target: "账户流水", action: "商户钱包内部划转" });
+        recordTenantFact({ title: "租户钱包内部划转完成", object: result.transferId, status: `${result.sourceWallet} → ${result.targetWallet} · CNY ${formatMoney(amount)}`, target: "账户流水", action: "租户钱包内部划转" });
         closeActionModal();
         if (state.activePage === "平台钱包" || state.activePage === "资金划转") renderNavPage(state.activePage);
         showToast(`${result.duplicate ? "已返回原划转" : "划转完成"}：${result.transferId}`);
@@ -31363,6 +31370,10 @@
         if (openMerchantModule(navButton.dataset.nav)) return;
         if (openTenantSystemModule(navButton.dataset.nav)) return;
         const targetPage = navButton.dataset.nav;
+        if (targetPage === "账户流水") {
+          if (!state.walletLedgerFromCard) state.walletLedgerWallet = "";
+          state.walletLedgerFromCard = false;
+        }
         if (state.pendingSourceNavigation === targetPage) {
           state.pendingSourceNavigation = "";
         } else {
@@ -31456,14 +31467,20 @@
         } else if (action === "go-transfers") {
           closeDrawer();
           document.querySelector('[data-nav="资金划转"]')?.click();
+        } else if (action === "back-to-wallets") {
+          state.walletLedgerWallet = "";
+          state.walletLedgerFromCard = false;
+          document.querySelector('[data-nav="平台钱包"]')?.click();
+        } else if (action === "wallet-ledger-window") {
+          state.walletLedgerWindow = ["hour", "today", "yesterday"].includes(actionButton.dataset.window) ? actionButton.dataset.window : "hour";
+          renderNavPage(state.activePage === "账户流水" ? "账户流水" : "平台钱包");
         } else if (action === "wallet-ledger") {
           closeDrawer();
-          document.querySelector('[data-nav="账户流水"]')?.click();
           const wallet = actionButton.dataset.wallet || "";
-          const walletFilter = document.getElementById("moduleFilter1");
-          if (walletFilter && wallet) walletFilter.value = wallet;
-          const visible = applyModuleFilters({ announce: false });
-          showToast(`已打开${wallet || "当前钱包"}流水，共 ${visible} 条结果`);
+          state.walletLedgerWallet = wallet;
+          state.walletLedgerFromCard = true;
+          document.querySelector('[data-nav="账户流水"]')?.click();
+          showToast(`已打开${wallet || "当前钱包"}流水`);
         } else if (action === "ledger-source") {
           const target = actionButton.dataset.target;
           const relation = actionButton.dataset.relation || "";

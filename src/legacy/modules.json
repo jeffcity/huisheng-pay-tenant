@@ -65,7 +65,6 @@
   },
   "funds": {
     "label": "资金划转",
-    "navLabel": "商户资金划转",
     "group": "资金中心",
     "module": "overview",
     "sourceKey": "overview",

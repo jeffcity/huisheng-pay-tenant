@@ -12,7 +12,7 @@ test("页面注册表包含 23 个页面", () => {
   assert.equal(Object.keys(modules).length, 23);
 });
 
-test("租户钱包与商户资金划转导航口径一致", async () => {
+test("租户钱包与资金划转导航及业务对象口径一致", async () => {
   const [loginHtml, systemHtml, overviewHtml] = await Promise.all([
     readFile(path.join(root, "public/legacy/sources/login.html"), "utf8"),
     readFile(path.join(root, "public/legacy/sources/system.html"), "utf8"),
@@ -20,8 +20,25 @@ test("租户钱包与商户资金划转导航口径一致", async () => {
   ]);
   assert.equal(modules.wallets.label, "租户钱包");
   assert.equal(modules.funds.label, "资金划转");
-  assert.equal(modules.funds.navLabel, "商户资金划转");
+  assert.equal(modules.funds.navLabel, undefined);
   assert.match(overviewHtml, /<h1 class="page-title">租户钱包<\/h1>/);
+  assert.match(overviewHtml, /<h2>最近钱包流水<\/h2>/);
+  assert.match(overviewHtml, /<th>流水单号<\/th><th>时间<\/th><th>钱包<\/th><th>类型<\/th><th>金额<\/th><th>变动后余额<\/th><th>关联单号<\/th>/);
+  assert.match(overviewHtml, /function walletLedgerDirectionTag\(value\)/);
+  assert.match(overviewHtml, /columns: \["划转单号", "来源钱包", "目标钱包"/);
+  assert.match(overviewHtml, /"划转金额 \/ 手续费", "订单状态", "用途说明"/);
+  assert.doesNotMatch(overviewHtml, /订单状态 \/ 执行方式|<span class="muted">实时执行，无平台审核<\/span>/);
+  assert.doesNotMatch(overviewHtml, /划转编号 \/ 关联号|请输入划转编号或关联号|WCOR202607|record\.correlationId|result\.correlationId/);
+  assert.match(overviewHtml, /if \(pageName === "账户流水"\) return renderWalletLedgerPage\(\)/);
+  assert.match(overviewHtml, /data-action="back-to-wallets"[\s\S]*?返回租户钱包/);
+  assert.match(overviewHtml, /action === "back-to-wallets"[\s\S]*?data-nav="平台钱包"/);
+  assert.match(overviewHtml, /function transferTargets\(source\) \{[\s\S]*?filter\(\(walletName\) => walletName !== source\)/);
+  assert.doesNotMatch(overviewHtml, />发起提现<\/button>/);
+  assert.doesNotMatch(overviewHtml, /<select[^>]+data-wallet-role/);
+  assert.doesNotMatch(overviewHtml, /演示角色：/);
+  assert.doesNotMatch(overviewHtml, /来源商户 \/ 钱包|目标商户 \/ 钱包|发起商户钱包划转/);
+  assert.doesNotMatch(overviewHtml, /sourceMerchant|targetMerchant|walletTransferMerchants/);
+  assert.match(overviewHtml, /function walletTransferFingerprint\(\{ sourceWallet, targetWallet, amount, purpose \}\)/);
   assert.match(loginHtml, /id: "funding", label: "资金划转"[^\n]+tenant\.wallet_transfer\.view/);
   assert.match(systemHtml, /id:'funding',page:'资金划转'[^\n]+tenant\.wallet_transfer\.view/);
   assert.doesNotMatch(systemHtml, /id:'funding',page:'资金申请'/);
