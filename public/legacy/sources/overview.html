@@ -20714,7 +20714,9 @@
       left: 50%;
       top: 50%;
       width: min(920px, calc(100vw - 32px));
-      max-height: min(86vh, 900px);
+      height: auto;
+      max-height: min(860px, calc(100vh - 40px));
+      max-height: min(860px, calc(100dvh - 40px));
       background: var(--surface);
       z-index: 60;
       border: 1px solid var(--border);
@@ -20759,7 +20761,12 @@
       flex-direction: column;
       gap: 14px;
       min-height: 0;
+      flex: 1 1 auto;
       overscroll-behavior: contain;
+    }
+
+    .drawer-body > * {
+      flex: 0 0 auto;
     }
 
     .modal-mask {
@@ -20945,7 +20952,6 @@
     .wallet-pipe-status i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: wallet-pulse 2.4s ease-in-out infinite; }
     .wallet-pipe-status.wallet-state--frozen { color: var(--warning); } .wallet-pipe-status.wallet-state--disabled { color: var(--danger); } .wallet-pipe-status.wallet-state--readonly { color: var(--text-tertiary); }
     @keyframes wallet-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
-    .wallet-pipe-ver { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--text-tertiary); background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; }
     .wallet-pipe-avail-label { font-size: 12px; color: var(--text-tertiary); }
     .wallet-pipe-avail { margin-top: 2px; font-family: var(--mono); font-weight: 700; font-size: 26px; letter-spacing: -.035em; line-height: 1.15; }
     .wallet-pipe-meta { display: flex; border-top: 1px solid var(--border); padding-top: 11px; margin-top: auto; }
@@ -20997,11 +21003,39 @@
     .wallet-activity-time { margin-top: 2px; display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-tertiary); }
     .wallet-activity-time .lucide { width: 12px; height: 12px; }
 
+    /* 平台钱包：三钱包 + 最近流水 */
+    .wallet-overview { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-soft); overflow: hidden; }
+    .wallet-overview-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 20px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #fff 0%, #fbfcff 100%); }
+    .wallet-overview-title { display: flex; align-items: center; gap: 11px; }
+    .wallet-overview-title-icon { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--primary-light); color: var(--primary); }
+    .wallet-overview-title-icon .lucide { width: 19px; height: 19px; }
+    .wallet-overview-title h2 { margin: 0; font-size: 17px; line-height: 24px; }
+    .wallet-overview-title p { margin: 2px 0 0; color: var(--text-tertiary); font-size: 12px; }
+    .wallet-overview-total { min-width: 0; text-align: right; }
+    .wallet-overview-total > span { display: block; font-size: 11px; color: var(--text-tertiary); }
+    .wallet-overview-total strong { display: block; margin-top: 2px; font-family: var(--mono); font-size: 21px; line-height: 26px; color: var(--text); }
+    .wallet-overview-total small { display: block; margin-top: 2px; color: var(--text-tertiary); font-size: 11px; }
+    .wallet-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 16px; background: #f7f9fc; }
+    .wallet-card-grid .wallet-pipe-node { box-shadow: none; }
+    .wallet-card-grid .wallet-pipe-node:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(29,33,41,.08); }
+    .wallet-action-primary { border-color: var(--primary); background: var(--primary); color: #fff; font-weight: 700; }
+    .wallet-action-primary:hover { border-color: var(--primary-hover); background: var(--primary-hover); color: #fff; }
+    .wallet-recent-ledger { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-soft); overflow: hidden; }
+    .wallet-recent-ledger .wallet-section-head { align-items: center; padding: 17px 20px 14px; }
+    .wallet-recent-ledger .wallet-section-head h2 { font-size: 17px; }
+    .wallet-recent-ledger .table-wrap { border: 0; border-radius: 0; box-shadow: none; }
+    .wallet-recent-ledger .rich-table { min-width: 1240px; }
+    .wallet-recent-ledger .rich-table th { background: #f7f9fc; }
+    .wallet-recent-ledger .rich-table td { padding-top: 12px; padding-bottom: 12px; vertical-align: middle; }
+    .wallet-ledger-note { display: inline-flex; align-items: center; gap: 6px; color: var(--text-tertiary); font-size: 12px; }
+    .wallet-ledger-note .lucide { width: 14px; height: 14px; }
+
     @media (max-width: 1024px) {
       .wallet-pipeline { flex-wrap: wrap; gap: 14px; }
       .wallet-pipe-node { flex: 1 1 100%; }
       .wallet-pipe-link { display: none; }
       .wallet-lower-grid { grid-template-columns: minmax(0, 1fr); }
+      .wallet-card-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 780px) {
       .top-actions { align-items: stretch; flex-wrap: wrap; gap: 8px; }
@@ -21011,6 +21045,9 @@
       .wallet-hero-side { width: 100%; min-width: 0; }
       .wallet-role-select { width: 100%; }
       .wallet-activity-main { align-items: flex-start; flex-direction: column; gap: 2px; }
+      .wallet-overview-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+      .wallet-overview-total { text-align: left; }
+      .wallet-card-grid { padding: 12px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -21164,6 +21201,13 @@
       }
 
       .modal {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+      }
+
+      .drawer {
         width: 100%;
         height: 100%;
         max-height: none;
@@ -21446,7 +21490,7 @@
         <div class="nav-group">
           <div class="nav-group-title">资金中心</div>
           <button class="nav-button" type="button" data-nav="平台钱包"><i data-lucide="landmark"></i><span>平台钱包</span></button>
-          <button class="nav-button" type="button" data-nav="资金申请"><i data-lucide="arrow-left-right"></i><span>资金申请</span></button>
+          <button class="nav-button" type="button" data-nav="资金划转"><i data-lucide="arrow-left-right"></i><span>资金划转</span></button>
           <button class="nav-button" type="button" data-nav="账户流水"><i data-lucide="list-tree"></i><span>账户流水</span></button>
           <button class="nav-button" type="button" data-nav="日终报表"><i data-lucide="scale"></i><span>日终报表</span></button>
           <button class="nav-button" type="button" data-nav="导出任务"><i data-lucide="download"></i><span>导出任务</span></button>
@@ -21454,6 +21498,7 @@
         <div class="nav-group">
           <div class="nav-group-title">运营中心</div>
           <button class="nav-button" type="button" data-nav="经营报表"><i data-lucide="chart-no-axes-combined"></i><span>经营报表</span></button>
+          <button class="nav-button" type="button" data-nav="全局订单追踪"><i data-lucide="scan-search"></i><span>全局订单追踪</span></button>
           <button class="nav-button" type="button" data-nav="业务待办"><i data-lucide="list-checks"></i><span>业务待办</span></button>
           <button class="nav-button" type="button" data-nav="工单协同"><i data-lucide="messages-square"></i><span>工单协同</span></button>
           <button class="nav-button" type="button" data-nav="通知中心"><i data-lucide="bell-ring"></i><span>通知中心</span></button>
@@ -25019,14 +25064,14 @@
           { label: "搜索", icon: "search", action: "search", type: "primary" },
           { label: "重置", icon: "rotate-ccw", action: "reset" },
           { label: "内部划转", icon: "arrow-left-right", action: "internal-transfer", type: "primary" },
-          { label: "资金申请", icon: "file-plus-2", action: "go-funds" },
+          { label: "划转订单", icon: "list-tree", action: "go-transfers" },
           { label: "导出流水", icon: "download", action: "export" }
         ],
         summary: [
           ["今日可用", "CNY 2,002,333.10", "positive"],
           ["账户状态", "正常", "positive"],
           ["最近更新", "今天 11:06", ""],
-          ["快捷操作", "划转 / 资金申请", ""]
+          ["快捷操作", "划转 / 划转订单", ""]
         ],
         tableHint: "查看各钱包余额、近期动态和常用操作。",
         tableMinWidth: 1780,
@@ -25108,14 +25153,44 @@
           [`<div class="stack"><strong>东盛电商</strong><span class="mono muted">MCH-1188</span></div>`, "代收", "1,504 / 1,486 / 18", `<strong class="mono">CNY 4,775,800.00</strong>`, "98.70%", `<span class="mono">CNY 6,160.00</span>`, `<span class="mono">CNY 5,600.00</span>`, `<strong class="mono positive">CNY 560.00</strong>`, "0", "2026-07-17 16:24:40", `<div class="cell-actions"><button class="btn-link" data-action="report-orders">订单</button><button class="btn-link" data-action="report-recon">平台钱包核对</button></div>`]
         ]
       },
+      "全局订单追踪": {
+        title: "全局订单追踪",
+        subtitle: "按订单号查看当前租户订单的处理状态、异常节点和通知结果。",
+        metrics: [["当前订单", "7", "覆盖 CNY 代收、退款与代付"], ["当前异常", "3", "失败、终态冲突与未知终态"], ["通知失败率", "28.57%", "当前筛选范围"]],
+        filters: [
+          { label: "订单号", placeholder: "平台 / 通道 / 商户订单号", column: -1 },
+          { label: "商户", placeholder: "商户名称或编号", column: 2 },
+          { label: "订单类型", type: "select", options: ["全部类型", "代收", "代收退款", "代付"], column: 3 },
+          { label: "当前状态", type: "select", options: ["全部状态", "成功", "处理中", "失败", "异常待处理", "已取消"], column: 4 },
+          { label: "UTC+8 日期", type: "date", column: 8 }
+        ],
+        actions: [
+          { label: "查询", icon: "search", action: "search", type: "primary" },
+          { label: "重置", icon: "rotate-ccw", action: "reset" },
+          { label: "导出数据", icon: "download", action: "export" }
+        ],
+        summary: [],
+        tableHint: "共 7 笔 · 异常 3 笔（当前筛选）",
+        tableMinWidth: 2240,
+        columns: ["平台订单号", "通道订单号 / 商户订单号", "商户", "类型 / 金额", "当前状态", "异常节点", "结果摘要", "通知结果", "更新时间", "操作"],
+        rows: [
+          [`<span class="mono">HS-C-260717-000941</span>`, `<div class="stack"><span class="mono">QP20260717000941</span><span class="mono muted">CO-M-20260717-0941</span></div>`, `<div class="stack"><strong>星河游戏</strong><span class="mono muted">MCH-2031</span></div>`, `<div class="stack"><span>代收</span><strong class="mono">CNY 8,600.00</strong></div>`, `<div class="stack"><span class="tag tag-green">成功</span><span class="muted">明确终态</span></div>`, `<span class="muted">-</span>`, `QuickPay / 成功`, `<span class="tag tag-green">已通知</span>`, `<span class="mono">2026-07-17 14:33:20</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`],
+          [`<span class="mono">HS-C-260717-000982</span>`, `<div class="stack"><span class="mono">QP20260717000982</span><span class="mono muted">CO-M-20260717-0982</span></div>`, `<div class="stack"><strong>星河游戏</strong><span class="mono muted">MCH-2031</span></div>`, `<div class="stack"><span>代收</span><strong class="mono">CNY 12,800.00</strong></div>`, `<div class="stack"><span class="tag tag-orange">异常待处理</span><span class="muted">等待通道最终结果</span></div>`, `通道结果确认`, `QuickPay / 未知`, `<span class="tag tag-green">已通知</span>`, `<span class="mono">2026-07-17 15:42:18</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`],
+          [`<span class="mono">HS-C-260717-000862</span>`, `<div class="stack"><span class="mono">TCI202607170862</span><span class="mono muted">CO-M-20260717-0862</span></div>`, `<div class="stack"><strong>东盛电商</strong><span class="mono muted">MCH-1188</span></div>`, `<div class="stack"><span>代收</span><strong class="mono">CNY 21,000.00</strong></div>`, `<div class="stack"><span class="tag tag-orange">异常待处理</span><span class="muted">终态冲突</span></div>`, `终态冲突处理`, `保留原过期；迟到成功待核实`, `<span class="tag tag-red">失败停止</span>`, `<span class="mono">2026-07-17 13:14:26</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`],
+          [`<span class="mono">HS-P-260717-000298</span>`, `<div class="stack"><span class="mono">BP20260717000298</span><span class="mono muted">PO-M-20260717-0298</span></div>`, `<div class="stack"><strong>星河游戏</strong><span class="mono muted">MCH-2031</span></div>`, `<div class="stack"><span>代付</span><strong class="mono">CNY 9,800.00</strong></div>`, `<div class="stack"><span class="tag tag-green">成功</span><span class="muted">明确终态</span></div>`, `<span class="muted">-</span>`, `BridgePay / 成功`, `<span class="tag tag-green">已通知</span>`, `<span class="mono">2026-07-17 12:43:18</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`],
+          [`<span class="mono">HS-P-260717-002134</span>`, `<div class="stack"><span class="mono">PX20260717002134</span><span class="mono muted">PO-M-20260717-2134</span></div>`, `<div class="stack"><strong>星河游戏</strong><span class="mono muted">MCH-2031</span></div>`, `<div class="stack"><span>代付</span><strong class="mono">CNY 8,000.00</strong></div>`, `<div class="stack"><span class="tag tag-red">失败</span><span class="muted">明确终态</span></div>`, `代付下单`, `PayoutX / 收款资料不匹配`, `<span class="tag tag-red">失败停止</span>`, `<span class="mono">2026-07-17 15:18:46</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`],
+          [`<span class="mono">HS-P-260717-000251</span>`, `<div class="stack"><span class="mono">PX20260717000251</span><span class="mono muted">PO-M-20260717-0251</span></div>`, `<div class="stack"><strong>寰宇数娱</strong><span class="mono muted">MCH-2209</span></div>`, `<div class="stack"><span>代付</span><strong class="mono">CNY 42,000.00</strong></div>`, `<div class="stack"><span class="tag tag-orange">异常待处理</span><span class="muted">等待通道最终结果</span></div>`, `通道结果确认`, `PayoutX / 处理中`, `<span class="tag tag-orange">重试中</span>`, `<span class="mono">2026-07-17 14:58:02</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`],
+          [`<span class="mono">HS-R-260717-000077</span>`, `<div class="stack"><span class="mono">QP-RF-20260717-0077</span><span class="mono muted">RF-M-20260717-0077</span></div>`, `<div class="stack"><strong>东盛电商</strong><span class="mono muted">MCH-1188</span></div>`, `<div class="stack"><span>代收退款</span><strong class="mono">CNY 1,280.00</strong></div>`, `<div class="stack"><span class="tag tag-green">成功</span><span class="muted">明确终态</span></div>`, `<span class="muted">-</span>`, `原通道退款 / 成功`, `<span class="tag tag-green">已通知</span>`, `<span class="mono">2026-07-17 11:26:44</span>`, `<button class="btn-link" type="button" data-action="tracking-detail">详情</button>`]
+        ]
+      },
       "业务待办": {
         title: "业务待办",
         subtitle: "聚合当前租户需要处理的订单、资金、通知和核对事项；所有操作仍回到来源业务规则。",
-        metrics: [["当前待办", "6", "按最早进入排序"], ["代收处置", "1", "补单或封禁 IP"], ["代付处置", "1", "补单、重新下单或冲销"], ["异常与通知", "2", "按来源规则处理"], ["资金与核对", "2", "确认付款或通知平台"]],
+        metrics: [["当前待办", "5", "按最早进入排序"], ["代收处置", "1", "补单或封禁 IP"], ["代付处置", "1", "补单、重新下单或冲销"], ["异常与通知", "2", "按来源规则处理"], ["核对差异", "1", "通知平台"]],
         filters: [
           { label: "来源单号", placeholder: "订单 / 申请 / 核对编号" },
-          { label: "来源类型", type: "select", options: ["全部类型", "代收订单处置", "代付订单处置", "异常订单", "商户通知失败", "资金申请处理", "日终报表差异"] },
-          { label: "当前状态", type: "select", options: ["全部状态", "待处理", "异常待处理", "失败停止", "待付款", "有差异"] },
+          { label: "来源类型", type: "select", options: ["全部类型", "代收订单处置", "代付订单处置", "异常订单", "商户通知失败", "日终报表差异"] },
+          { label: "当前状态", type: "select", options: ["全部状态", "待处理", "异常待处理", "失败停止", "有差异"] },
           { label: "进入时间", type: "date" }
         ],
         actions: [{ label: "搜索", icon: "search", action: "search", type: "primary" }, { label: "重置", icon: "rotate-ccw", action: "reset" }, { label: "刷新待办", icon: "refresh-cw", action: "refresh-page" }, { label: "移出记录", icon: "history", action: "todo-history" }],
@@ -25128,7 +25203,6 @@
           ["TD-20260717-002", "代付订单处置", "HS-P-260717-002134", "v2", "星河游戏", "CNY 8,000.00", `<span class="tag tag-orange">待处理</span>`, "00:31:06", "代付下单失败", "可补单 / 重新下单", `<button class="btn-link" data-action="todo-source" data-target="法币代付订单" data-source="HS-P-260717-002134">处理订单</button>`],
           ["TD-20260717-004", "异常订单", "HS-P-260717-000251", "v4", "星河游戏", "CNY 42,000.00", `<span class="tag tag-red">异常待处理</span>`, "02:16:40", "等待通道最终结果", "进入来源订单页", `<button class="btn-link" data-action="todo-source" data-target="法币代付订单" data-source="HS-P-260717-000251">查看订单</button>`],
           ["TD-20260717-005", "商户通知失败", "EV-20260717-881902", "业务 v3 / 投递 v10", "星河游戏", "CNY 4,520.00", `<span class="tag tag-red">失败停止</span>`, "00:22:18", "自动重试 10 / 10 后失败停止", "可人工补推原事件", `<button class="btn-link" data-action="todo-source" data-target="通知中心" data-source="EV-20260717-881902">处理通知</button>`],
-          ["TD-20260717-006", "资金申请处理", "TF202607170021", "v1", "CNY 代付钱包", "CNY 120,000.00", `<span class="tag tag-orange">待付款</span>`, "00:48:21", "待确认付款或撤回", "提交后等待平台，不再计待办", `<button class="btn-link" data-action="todo-source" data-target="资金申请" data-source="TF202607170021">处理付款</button>`],
           ["TD-20260717-007", "日终报表差异", "REC-20260717-PAYOUT", "v2", "CNY 代付钱包", "CNY 2,000.00", `<span class="tag tag-red">有差异</span>`, "01:09:12", "双边流水差 1", "只通知平台", `<button class="btn-link" data-action="todo-source" data-target="日终报表" data-source="REC-20260717-PAYOUT">查看差异</button>`]
         ]
       },
@@ -25670,16 +25744,52 @@
       { title: "内部划转完成", amount: "+ 50,000.00", wallet: "代付钱包", time: "今天 10:48", tone: "" },
       { title: "提款处理中", amount: "20,020.00", wallet: "提款钱包", time: "今天 09:58", tone: "warning" }
     ];
+    const walletTransferMerchants = [
+      { merchantId: "MCH-2031", merchantName: "星河游戏" },
+      { merchantId: "MCH-1188", merchantName: "东盛电商" },
+      { merchantId: "MCH-2209", merchantName: "北辰游戏" }
+    ];
     const walletTransferFacts = new Map([
+      ["WTR202607200001", {
+        transferId: "WTR202607200001", correlationId: "WCOR202607200001", tenantId: "HS-TEN-001", currency: "CNY",
+        sourceMerchantId: "MCH-2031", sourceMerchantName: "星河游戏", targetMerchantId: "MCH-1188", targetMerchantName: "东盛电商",
+        sourceWallet: "CNY 代收钱包", targetWallet: "CNY 代付钱包", amount: 10000, purpose: "日常代付备付", status: "succeeded",
+        occurredAt: "2026-07-20 11:12:26", ledgerIds: ["LG-20260720-0001-OUT", "LG-20260720-0001-IN"], idempotencyKey: "WTR-IDEM-20260720-0001", auditId: "AL-20260720-WTR-0001",
+        sourceBefore: { total: 1214712.92, frozen: 249704.40, available: 965008.52, version: 53 }, sourceAfter: { total: 1204712.92, frozen: 249704.40, available: 955008.52, version: 54 },
+        targetBefore: { total: 820310.88, frozen: 84630.80, available: 735680.08, version: 32 }, targetAfter: { total: 830310.88, frozen: 84630.80, available: 745680.08, version: 33 }
+      }],
       ["TRF202607170018", {
         transferId: "TRF202607170018", correlationId: "TRF202607170018", tenantId: "HS-TEN-001", currency: "CNY",
+        sourceMerchantId: "MCH-1188", sourceMerchantName: "东盛电商", targetMerchantId: "MCH-2031", targetMerchantName: "星河游戏",
         sourceWallet: "CNY 代收钱包", targetWallet: "CNY 代付钱包", amount: 50000, purpose: "历史资金调拨", status: "succeeded",
-        occurredAt: "2026-07-17 10:48:12", ledgerIds: ["LG202607170201", "LG202607170202"],
-        sourceBefore: { total: 1258362.22, frozen: 248900, available: 1009462.22 }, sourceAfter: { total: 1208362.22, frozen: 248900, available: 959462.22 },
-        targetBefore: { total: 770310.88, frozen: 77420, available: 692890.88 }, targetAfter: { total: 820310.88, frozen: 77420, available: 742890.88 }
+        occurredAt: "2026-07-17 10:48:12", ledgerIds: ["LG202607170201", "LG202607170202"], idempotencyKey: "WTR-IDEM-20260717-0018", auditId: "AL-20260717-WTR-0018",
+        sourceBefore: { total: 1258362.22, frozen: 248900, available: 1009462.22, version: 31 }, sourceAfter: { total: 1208362.22, frozen: 248900, available: 959462.22, version: 32 },
+        targetBefore: { total: 770310.88, frozen: 77420, available: 692890.88, version: 28 }, targetAfter: { total: 820310.88, frozen: 77420, available: 742890.88, version: 29 }
+      }],
+      ["TRF202607160076", {
+        transferId: "TRF202607160076", correlationId: "WCOR202607160076", tenantId: "HS-TEN-001", currency: "CNY",
+        sourceMerchantId: "MCH-2209", sourceMerchantName: "北辰游戏", targetMerchantId: "MCH-2031", targetMerchantName: "星河游戏",
+        sourceWallet: "CNY 代收钱包", targetWallet: "CNY 提款钱包", amount: 25000, purpose: "补充提款可用资金", status: "succeeded",
+        occurredAt: "2026-07-16 15:32:41", ledgerIds: ["LG202607160231", "LG202607160232"], idempotencyKey: "WTR-IDEM-20260716-0076", auditId: "AL-20260716-WTR-0076",
+        sourceBefore: { total: 1283362.22, frozen: 248900, available: 1034462.22, version: 29 }, sourceAfter: { total: 1258362.22, frozen: 248900, available: 1009462.22, version: 30 },
+        targetBefore: { total: 295000, frozen: 0, available: 295000, version: 18 }, targetAfter: { total: 320000, frozen: 0, available: 320000, version: 19 }
+      }],
+      ["TRF202607150041", {
+        transferId: "TRF202607150041", correlationId: "WCOR202607150041", tenantId: "HS-TEN-001", currency: "CNY",
+        sourceMerchantId: "MCH-2031", sourceMerchantName: "星河游戏", targetMerchantId: "MCH-2209", targetMerchantName: "北辰游戏",
+        sourceWallet: "CNY 代付钱包", targetWallet: "CNY 提款钱包", amount: 12000, purpose: "提款资金准备", status: "succeeded",
+        occurredAt: "2026-07-15 09:18:06", ledgerIds: ["LG202607150119", "LG202607150120"], idempotencyKey: "WTR-IDEM-20260715-0041", auditId: "AL-20260715-WTR-0041",
+        sourceBefore: { total: 782310.88, frozen: 77420, available: 704890.88, version: 25 }, sourceAfter: { total: 770310.88, frozen: 77420, available: 692890.88, version: 26 },
+        targetBefore: { total: 283000, frozen: 0, available: 283000, version: 16 }, targetAfter: { total: 295000, frozen: 0, available: 295000, version: 17 }
       }]
     ]);
-    const walletTransferIdempotency = new Map();
+    const walletTransferIdempotency = new Map([...walletTransferFacts.values()].map((result) => [
+      result.idempotencyKey,
+      {
+        fingerprint: walletTransferFingerprint(result),
+        result: cloneWalletTransfer(result)
+      }
+    ]));
     const walletTransferLedgerRows = [];
     let walletTransferSequence = 2;
     let walletTransferUiSequence = 1;
@@ -25698,15 +25808,15 @@
       permissionVersion: 12,
       dataScope: { scopeCode: "tenant.current", merchantIds: [] },
       tenantId: "HS-TEN-001",
-      authorizedMerchantIds: ["MCH-2031"],
+      authorizedMerchantIds: ["MCH-2031", "MCH-1188", "MCH-2209"],
       sensitiveAccess: true,
       google2fa: "123456",
-      permissions: new Set([...document.querySelectorAll("[data-nav]")].map((button) => button.dataset.nav).filter(Boolean).concat(Object.keys(modulePages))),
+      permissions: new Set([...document.querySelectorAll("[data-nav]")].map((button) => button.dataset.nav).filter(Boolean).concat(Object.keys(modulePages).filter((page) => page !== "资金申请"))),
       actionPermissions: new Set([
         "tenant.dashboard.export", "tenant.collect.cancel", "tenant.collect.export", "tenant.collect.makeup", "tenant.collect.ip_block",
         "tenant.refund.review", "tenant.refund.export", "tenant.payout.review", "tenant.payout.select_channel", "tenant.payout.cancel", "tenant.payout.export",
-        "tenant.payout.makeup", "tenant.payout.reorder", "tenant.payout.reverse", "tenant.order.query", "tenant.channel_incident.notify", "tenant.channel_authorization.export", "tenant.wallet.transfer",
-        "tenant.platform_wallet.export", "tenant.fund_application.create", "tenant.withdrawal_account.manage",
+        "tenant.payout.makeup", "tenant.payout.reorder", "tenant.payout.reverse", "tenant.order.query", "tenant.channel_incident.notify", "tenant.channel_authorization.export", "tenant.wallet_transfer.create",
+        "tenant.platform_wallet.export", "tenant.wallet_transfer.export", "tenant.fund_application.create", "tenant.withdrawal_account.manage",
         "tenant.fund_application.withdraw", "tenant.fund_application.export", "tenant.ledger.export",
         "tenant.reconciliation.notify_platform", "tenant.reconciliation.export", "tenant.report.export", "tenant.ticket.manage",
         "tenant.ticket.export", "tenant.notification.resend", "tenant.notification.export", "tenant.sensitive.view"
@@ -25861,7 +25971,6 @@
       { id: "TD-20260717-002", type: "代付订单处置", sourceId: "HS-P-260717-002134", sourceVersion: 2, actionableState: "待处理", target: "法币代付订单", party: "星河游戏", amount: "CNY 8,000.00", wait: "00:31:06", progress: "代付下单失败", permission: "可补单 / 重新下单", actionLabel: "处理订单", direction: "payout", enteredAt: "2026-07-17 10:29:00", current: true },
       { id: "TD-20260717-004", type: "异常订单", sourceId: "HS-P-260717-000251", sourceVersion: 4, actionableState: "异常待处理", target: "法币代付订单", party: "星河游戏", amount: "CNY 42,000.00", wait: "02:16:40", progress: "等待通道最终结果", permission: "进入来源订单页", actionLabel: "查看订单", direction: "payout", enteredAt: "2026-07-17 08:44:00", current: true },
       { id: "TD-20260717-005", type: "商户通知失败", sourceId: "EV-20260717-881902", sourceVersion: 10, actionableState: "失败停止", target: "通知中心", party: "星河游戏", amount: "CNY 4,520.00", wait: "00:22:18", progress: "自动重试 10 / 10 后失败停止", permission: "可人工补推原事件", actionLabel: "处理通知", direction: "collect", enteredAt: "2026-07-17 15:51:40", current: true },
-      { id: "TD-20260717-006", type: "资金申请处理", sourceId: "TF202607170021", sourceVersion: 1, actionableState: "待付款", target: "资金申请", party: "CNY 代付钱包", amount: "CNY 120,000.00", wait: "00:48:21", progress: "待确认付款或撤回", permission: "提交后等待平台，不再计待办", actionLabel: "处理付款", direction: "general", enteredAt: "2026-07-17 10:22:00", current: true },
       { id: "TD-20260717-007", type: "日终报表差异", sourceId: "REC-20260717-PAYOUT", sourceVersion: 2, actionableState: "有差异", target: "日终报表", party: "CNY 代付钱包", amount: "CNY 2,000.00", wait: "01:09:12", progress: "双边流水差 1", permission: "只通知平台，不直接改账", actionLabel: "查看差异", direction: "general", enteredAt: "2026-07-17 14:42:00", current: true }
     ];
     const tenantTodoHistory = [];
@@ -27194,11 +27303,11 @@
       return value ? JSON.parse(JSON.stringify(value)) : value;
     }
 
-    function walletTransferFingerprint({ sourceWallet, targetWallet, amount, purpose }) {
-      return JSON.stringify({ tenantId: "HS-TEN-001", currency: "CNY", sourceWallet, targetWallet, amount: Number(amount).toFixed(2), purpose: String(purpose || "").trim() });
+    function walletTransferFingerprint({ sourceMerchantId, targetMerchantId, sourceWallet, targetWallet, amount, purpose }) {
+      return JSON.stringify({ tenantId: "HS-TEN-001", sourceMerchantId, targetMerchantId, currency: "CNY", sourceWallet, targetWallet, amount: Number(amount).toFixed(2), purpose: String(purpose || "").trim() });
     }
 
-    function walletTransferLedgerRow({ ledgerId, walletName, direction, amount, before, after, correlationId, pairedLedgerId, occurredAt }) {
+    function walletTransferLedgerRow({ ledgerId, walletName, direction, amount, before, after, correlationId, pairedLedgerId, occurredAt, merchantId, merchantName }) {
       const increase = direction === "增加";
       return [
         `<span class="mono">${escapeHtml(ledgerId)}</span>`, walletName,
@@ -27207,25 +27316,31 @@
         `<span class="mono">${formatMoney(before.total)} → ${formatMoney(after.total)}</span>`,
         `<span class="mono">${formatMoney(before.frozen)} → ${formatMoney(after.frozen)}</span>`,
         `<span class="mono">${formatMoney(before.available)} → ${formatMoney(after.available)}</span>`,
-        `<div class="stack"><span class="mono">${escapeHtml(correlationId)}</span><span class="muted">对应 ${escapeHtml(pairedLedgerId)}</span></div>`,
+        `<div class="stack"><span class="mono">${escapeHtml(correlationId)}</span><span class="muted">对应 ${escapeHtml(pairedLedgerId)}</span><span class="muted">${escapeHtml(merchantName || "-")} · ${escapeHtml(merchantId || "-")}</span></div>`,
         occurredAt,
         `<button class="btn-link" type="button" data-action="ledger-detail">详情</button>`
       ];
     }
 
     function executeWalletTransfer(input = {}) {
+      const sourceMerchantId = String(input.sourceMerchantId || input.merchantId || "").trim();
+      const targetMerchantId = String(input.targetMerchantId || input.merchantId || "").trim();
+      const sourceMerchant = walletTransferMerchants.find((item) => item.merchantId === sourceMerchantId);
+      const targetMerchant = walletTransferMerchants.find((item) => item.merchantId === targetMerchantId);
       const sourceWalletName = String(input.sourceWallet || input.source || "");
       const targetWalletName = String(input.targetWallet || input.target || "");
       const amount = Number(input.amount);
       const purpose = String(input.purpose || "").trim();
       const idempotencyKey = String(input.idempotencyKey || "").trim();
-      const fingerprint = walletTransferFingerprint({ sourceWallet: sourceWalletName, targetWallet: targetWalletName, amount, purpose });
+      const fingerprint = walletTransferFingerprint({ sourceMerchantId, targetMerchantId, sourceWallet: sourceWalletName, targetWallet: targetWalletName, amount, purpose });
       const previous = walletTransferIdempotency.get(idempotencyKey);
       if (!idempotencyKey) return { ok: false, code: "IDEMPOTENCY_KEY_REQUIRED", message: "缺少本次划转的幂等标识。" };
       if (previous) {
         if (previous.fingerprint !== fingerprint) return { ok: false, code: "IDEMPOTENCY_CONFLICT", message: "相同提交标识的核心字段已经变化，原划转保持不变。" };
         return { ...cloneWalletTransfer(previous.result), ok: true, duplicate: true };
       }
+      if (!sourceMerchant || !targetMerchant) return { ok: false, code: "MERCHANT_REQUIRED", message: "请选择来源与目标商户钱包。" };
+      if (![sourceMerchantId, targetMerchantId].every((merchantId) => currentTenantAccount.authorizedMerchantIds.includes(merchantId))) return { ok: false, code: "MERCHANT_SCOPE_DENIED", message: "当前账号无权操作所选来源或目标商户的钱包。" };
       if (input.authorized === false) return { ok: false, code: "PERMISSION_DENIED", message: "当前账号没有内部划转权限。" };
       if (input.twoFactorVerified === false) return { ok: false, code: "SECOND_FACTOR_INVALID", message: "Google 2FA 验证失败。" };
       const sourceWallet = walletShowcaseData[sourceWalletName];
@@ -27262,6 +27377,8 @@
       const auditId = String(input.auditId || `AL-20260720-WTR-${sequence}`);
       const result = {
         ok: true, duplicate: false, status: "succeeded", transferId, correlationId, tenantId: "HS-TEN-001", currency: "CNY",
+        sourceMerchantId: sourceMerchant.merchantId, sourceMerchantName: sourceMerchant.merchantName,
+        targetMerchantId: targetMerchant.merchantId, targetMerchantName: targetMerchant.merchantName,
         sourceWallet: sourceWalletName, targetWallet: targetWalletName, amount, purpose, idempotencyKey,
         expectedSourceVersion, expectedTargetVersion, sourceBefore, sourceAfter, targetBefore, targetAfter,
         ledgerIds, auditId, occurredAt
@@ -27271,8 +27388,8 @@
       targetWallet.recent = `内部划转 + CNY ${formatMoney(amount)}`;
       targetWallet.recentTime = occurredAt;
       walletShowcaseActivity.unshift({ title: "内部划转完成", amount: `+ ${formatMoney(amount)}`, wallet: targetWallet.name, time: occurredAt, tone: "" });
-      const sourceLedger = { ledgerId: ledgerIds[0], walletName: sourceWalletName, direction: "减少", amount, before: sourceBefore, after: sourceAfter, correlationId, pairedLedgerId: ledgerIds[1], occurredAt, transferId };
-      const targetLedger = { ledgerId: ledgerIds[1], walletName: targetWalletName, direction: "增加", amount, before: targetBefore, after: targetAfter, correlationId, pairedLedgerId: ledgerIds[0], occurredAt, transferId };
+      const sourceLedger = { ledgerId: ledgerIds[0], walletName: sourceWalletName, direction: "减少", amount, before: sourceBefore, after: sourceAfter, correlationId, pairedLedgerId: ledgerIds[1], occurredAt, transferId, merchantId: sourceMerchant.merchantId, merchantName: sourceMerchant.merchantName };
+      const targetLedger = { ledgerId: ledgerIds[1], walletName: targetWalletName, direction: "增加", amount, before: targetBefore, after: targetAfter, correlationId, pairedLedgerId: ledgerIds[0], occurredAt, transferId, merchantId: targetMerchant.merchantId, merchantName: targetMerchant.merchantName };
       walletTransferLedgerRows.unshift(sourceLedger, targetLedger);
       modulePages["账户流水"].rows.unshift(walletTransferLedgerRow(sourceLedger), walletTransferLedgerRow(targetLedger));
       walletTransferFacts.set(transferId, cloneWalletTransfer(result));
@@ -27312,24 +27429,62 @@
       return [...walletTransferFacts.values()].sort((a, b) => String(b.transferId).localeCompare(String(a.transferId)));
     }
 
+    function walletTransferOrderPage() {
+      const records = walletTransferRecords();
+      const totalAmount = records.reduce((sum, record) => sum + Number(record.amount || 0), 0);
+      const pathCount = new Set(records.map((record) => `${record.sourceMerchantId}/${record.sourceWallet}->${record.targetMerchantId}/${record.targetWallet}`)).size;
+      return {
+        title: "资金划转",
+        subtitle: "查询当前租户授权商户钱包之间的内部划转订单。",
+        metrics: [
+          ["划转订单", String(records.length), "当前租户"],
+          ["成功金额", `CNY ${formatMoney(totalAmount)}`, "实时完成"],
+          ["已用账户路径", `${pathCount} 条`, "钱包方向共 3 种"],
+          ["平台审核", "不需要", "提交后原子执行"]
+        ],
+        filters: [
+          { label: "划转编号 / 关联号", placeholder: "请输入划转编号或关联号", column: 0 },
+          { label: "来源商户 / 钱包", type: "select", options: ["全部来源", ...walletTransferAccounts(["CNY 代收钱包", "CNY 代付钱包"]).map((item) => `${item.merchantName} ${item.merchantId} / ${item.walletName}`)], column: 1 },
+          { label: "目标商户 / 钱包", type: "select", options: ["全部目标", ...walletTransferAccounts(["CNY 代付钱包", "CNY 提款钱包"]).map((item) => `${item.merchantName} ${item.merchantId} / ${item.walletName}`)], column: 2 },
+          { label: "订单状态", type: "select", options: ["全部状态", "成功"], column: 4 },
+          { label: "完成时间", type: "date", column: 6 }
+        ],
+        actions: [
+          { label: "搜索", icon: "search", action: "search", type: "primary" },
+          { label: "重置", icon: "rotate-ccw", action: "reset" },
+          { label: "发起划转", icon: "arrow-left-right", action: "internal-transfer", type: "primary" },
+          { label: "导出划转订单", icon: "download", action: "export" }
+        ],
+        summary: [
+          ["本页对象", "商户钱包划转", "positive"],
+          ["币种", "仅 CNY", "positive"],
+          ["执行方式", "实时完成", "positive"],
+          ["账户归属", "双端记录", "positive"]
+        ],
+        tableHint: "每笔划转分别记录来源商户钱包与目标商户钱包；允许代收钱包转代付或提款、代付钱包转提款，提款钱包不可反向划转。",
+        tableMinWidth: 1660,
+        columns: ["划转编号 / 关联号", "来源商户 / 钱包", "目标商户 / 钱包", "划转金额 / 手续费", "订单状态 / 执行方式", "用途说明", "完成时间", "操作"],
+        rows: records.map((record) => [
+          `<div class="stack"><strong class="mono">${escapeHtml(record.transferId)}</strong><span class="mono muted">${escapeHtml(record.correlationId)}</span></div>`,
+          `<div class="stack"><strong>${escapeHtml(record.sourceMerchantName || "-")}</strong> <span class="muted"><span class="mono">${escapeHtml(record.sourceMerchantId || "-")}</span> / ${escapeHtml(record.sourceWallet)}</span></div>`,
+          `<div class="stack"><strong>${escapeHtml(record.targetMerchantName || "-")}</strong> <span class="muted"><span class="mono">${escapeHtml(record.targetMerchantId || "-")}</span> / ${escapeHtml(record.targetWallet)}</span></div>`,
+          `<div class="stack"><strong class="mono">CNY ${formatMoney(record.amount)}</strong><span class="muted">手续费 CNY 0.00</span></div>`,
+          `<div class="stack"><span class="tag ${record.status === "succeeded" ? "tag-green" : "tag-orange"}">${record.status === "succeeded" ? "成功" : escapeHtml(record.status)}</span><span class="muted">实时执行，无平台审核</span></div>`,
+          escapeHtml(record.purpose || "-"),
+          `<span class="mono">${escapeHtml(record.occurredAt)}</span>`,
+          `<div class="cell-actions"><button class="btn-link" type="button" data-action="transfer-detail" data-transfer="${escapeHtml(record.transferId)}">详情</button></div>`
+        ])
+      };
+    }
+
     function renderWalletShowcasePage() {
       const canTransfer = currentTenantAccount.canTransfer;
-      const riskHold = walletRiskHoldInfo();
       const walletAggregate = Object.values(walletShowcaseData).reduce((acc, w) => {
         acc.total = roundCny(acc.total + w.total);
         acc.frozen = roundCny(acc.frozen + w.frozen);
         acc.available = roundCny(acc.available + w.total - w.frozen);
         return acc;
       }, { total: 0, frozen: 0, available: 0 });
-      const walletKeys = ["CNY 代收钱包", "CNY 代付钱包", "CNY 提款钱包"];
-      const walletTones = ["collect", "payout", "withdraw"];
-      const sharePct = walletKeys.map((key) => {
-        const w = walletShowcaseData[key];
-        const avail = roundCny(w.total - w.frozen);
-        return walletAggregate.available > 0 ? Math.round(avail / walletAggregate.available * 1000) / 10 : 0;
-      });
-      sharePct[sharePct.length - 1] = Math.max(0, roundCny(100 - sharePct.slice(0, -1).reduce((s, p) => roundCny(s + p), 0)));
-
       const walletCard = (source, tone) => {
         const wallet = walletShowcaseData[source];
         const available = formatMoney(wallet.total - wallet.frozen);
@@ -27344,7 +27499,6 @@
               <div class="wallet-pipe-name">${wallet.name}</div>
               <div class="wallet-pipe-status${statusMeta.cls ? ` ${statusMeta.cls}` : ""}"><i></i>${statusMeta.label}</div>
             </div>
-            <span class="wallet-pipe-ver">v${wallet.version}</span>
           </div>
           <div>
             <div class="wallet-pipe-avail-label">可用余额</div>
@@ -27354,27 +27508,19 @@
             <div><dt>当前总额</dt><dd>${formatMoney(wallet.total)}</dd></div>
             <div><dt>冻结</dt><dd>${formatMoney(wallet.frozen)}</dd></div>
           </dl>
-          <div class="wallet-pipe-recent">最近：${wallet.recent} · ${wallet.recentTime}</div>
           ${!isActive && statusMeta.note ? `<p class="modal-note" style="margin:0;">${statusMeta.note}</p>` : ""}
           <div class="wallet-pipe-actions">
+            ${!isWithdraw && canTransfer && isActive ? `<button class="btn wallet-action-primary" type="button" data-action="internal-transfer" data-source="${source}"><i data-lucide="arrow-left-right"></i>发起划转</button>` : ""}
             ${isWithdraw && canTransfer && isActive ? `<button class="btn wallet-btn-withdraw" type="button" data-action="create-withdrawal"><i data-lucide="banknote"></i>发起提现</button>` : ""}
-            <button class="btn" type="button" data-action="wallet-showcase-detail" data-wallet="${source}">详情</button>
             <button class="btn" type="button" data-action="wallet-ledger" data-wallet="${source}">流水</button>
           </div>
         </article>`;
       };
 
-      const pipeConnector = (source) => {
-        const srcActive = walletShowcaseData[source].status === "active";
-        return `
-        <div class="wallet-pipe-link">
-          <div class="wallet-pipe-line" aria-hidden="true"></div>
-          ${canTransfer && srcActive ? `<button class="wallet-pipe-btn" type="button" data-action="internal-transfer" data-source="${source}" title="从${walletShowcaseData[source].name}发起划转"><i data-lucide="arrow-right"></i></button>` : ""}
-          <span class="wallet-pipe-link-label">划转</span>
-        </div>`;
-      };
-
-      const activityDot = (walletName) => walletName.includes("代付") ? "wallet-dot--payout" : walletName.includes("提款") ? "wallet-dot--withdraw" : "";
+      const recentLedgerRows = [...modulePages["账户流水"].rows]
+        .filter((row) => !String(row[2] || "").includes("风险冻结"))
+        .sort((a, b) => String(b[8] || "").localeCompare(String(a[8] || "")))
+        .slice(0, 8);
 
       return `
         <section class="wallet-showcase" aria-label="平台钱包概览">
@@ -27388,123 +27534,42 @@
                 ${Object.entries(walletRoleProfiles).map(([key, profile]) => `<option value="${key}" ${currentTenantAccount.role === key ? "selected" : ""}>演示角色：${profile.label}</option>`).join("")}
               </select>
               <button class="btn" type="button" data-action="refresh-page"><i data-lucide="refresh-cw"></i>刷新</button>
-              <button class="btn" type="button" data-action="wallet-ledger" data-wallet=""><i data-lucide="list-tree"></i>全部明细</button>
             </div>
           </section>
 
-          <section class="wallet-hero" aria-label="平台资金概览">
-            <div class="wallet-hero-main">
-              <div class="wallet-eyebrow"><i data-lucide="landmark"></i>合计可用资金</div>
-              <strong class="wallet-hero-amount"><span class="ccy">CNY</span>${formatMoney(walletAggregate.available)}</strong>
-              <p class="wallet-hero-note">合计总额 ${formatMoney(walletAggregate.total)} · 合计冻结 ${formatMoney(walletAggregate.frozen)} · 3 个钱包 · 全部 CNY</p>
+          <section class="wallet-overview" aria-label="租户钱包">
+            <div class="wallet-overview-head">
+              <div class="wallet-overview-title">
+                <span class="wallet-overview-title-icon"><i data-lucide="wallet-cards"></i></span>
+                <div><h2>租户钱包</h2><p>当前租户 · 3 个 CNY 钱包</p></div>
+              </div>
+              <div class="wallet-overview-total">
+                <span>合计可用余额</span>
+                <strong>CNY ${formatMoney(walletAggregate.available)}</strong>
+                <small>总额 ${formatMoney(walletAggregate.total)} · 冻结 ${formatMoney(walletAggregate.frozen)}</small>
+              </div>
             </div>
-            <div class="wallet-hero-side">
-              <div class="wallet-prop-bar" aria-hidden="true">
-                ${walletKeys.map((key, i) => `<div class="wallet-prop-seg wallet-prop-${walletTones[i]}" style="width:${sharePct[i]}%"></div>`).join("")}
-              </div>
-              <div class="wallet-prop-legend">
-                ${walletKeys.map((key, i) => `<span><i class="wallet-prop-dot wallet-prop-${walletTones[i]}"></i>${walletShowcaseData[key].name.replace("钱包", "")} <b>${sharePct[i].toFixed(1)}%</b></span>`).join("")}
-              </div>
-              ${canTransfer ? `<button class="btn wallet-hero-cta" type="button" data-action="internal-transfer" data-source="CNY 代收钱包"><i data-lucide="arrow-left-right"></i>发起内部划转</button>` : `<span class="wallet-hero-note">当前角色仅可查看余额与流水</span>`}
+            <div class="wallet-card-grid">
+              ${walletCard("CNY 代收钱包", "collect")}
+              ${walletCard("CNY 代付钱包", "payout")}
+              ${walletCard("CNY 提款钱包", "withdraw")}
             </div>
           </section>
 
-          ${riskHold ? `
-          <section class="wallet-risk-banner" role="alert">
-            <div class="wallet-risk-icon"><i data-lucide="shield-alert"></i></div>
-            <div class="wallet-risk-body">
-              <div class="wallet-risk-title">代付钱包风险冻结 · <span class="mono">${escapeHtml(riskHold.id)}</span></div>
-              <div class="wallet-risk-detail">应冻结 <b>CNY ${formatMoney(riskHold.expected)}</b> · 已冻结 <b>CNY ${formatMoney(riskHold.held)}</b> · 待补足 <b>CNY ${formatMoney(riskHold.shortage)}</b>${riskHold.correctionId ? ` · 关联资金更正 <b>${escapeHtml(riskHold.correctionId)}</b>${riskHold.correctionStatus ? `（${escapeHtml(riskHold.correctionStatus)}）` : ""}` : ""}</div>
-              <div class="wallet-risk-note">${escapeHtml(riskHold.restriction || "暂停新代付提款；查询、入款与既有异常处理不受影响，限制不表示负余额")}</div>
+          <section class="wallet-recent-ledger" aria-label="最近流水">
+            <div class="wallet-section-head">
+              <div><h2>最近流水</h2><p>最近 8 笔钱包资金变动，包含代收、代付、提款、退款、人工调整与内部划转</p></div>
+              <span class="wallet-ledger-note"><i data-lucide="clock-3"></i>UTC+8</span>
             </div>
-            <button class="btn-link" type="button" data-action="wallet-showcase-detail" data-wallet="CNY 代付钱包">查看详情</button>
-          </section>` : ""}
-
-          ${walletLastTransferReceipt ? `<section class="operation-feedback success" role="status" aria-live="polite"><strong>最近划转已完成 · ${escapeHtml(walletLastTransferReceipt.transferId)}</strong><span>${escapeHtml(walletLastTransferReceipt.sourceWallet)} → ${escapeHtml(walletLastTransferReceipt.targetWallet)} · CNY ${formatMoney(walletLastTransferReceipt.amount)} · 关联号 ${escapeHtml(walletLastTransferReceipt.correlationId)} · 双边流水 ${escapeHtml(walletLastTransferReceipt.ledgerIds.join(" / "))} · ${escapeHtml(walletLastTransferReceipt.occurredAt)} UTC+8</span><span>来源 v${walletLastTransferReceipt.sourceBefore.version} → v${walletLastTransferReceipt.sourceAfter.version}；目标 v${walletLastTransferReceipt.targetBefore.version} → v${walletLastTransferReceipt.targetAfter.version}；审计 ${escapeHtml(walletLastTransferReceipt.auditId)}</span></section>` : ""}
-
-          <section class="wallet-pipeline" aria-label="钱包余额与资金流向">
-            ${walletCard("CNY 代收钱包", "collect")}
-            ${pipeConnector("CNY 代收钱包")}
-            ${walletCard("CNY 代付钱包", "payout")}
-            ${pipeConnector("CNY 代付钱包")}
-            ${walletCard("CNY 提款钱包", "withdraw")}
-          </section>
-
-          <section class="wallet-lower-grid">
-            <section class="wallet-showcase-panel">
-              <div class="wallet-section-head">
-                <div><h2>划转记录</h2><p>成功划转不可撤回；误划可查原编号并通知平台更正</p></div>
-                <button class="btn-link" type="button" data-action="wallet-ledger" data-wallet="">全部流水</button>
-              </div>
-              <div class="wallet-transfer-records">${walletTransferRecords().slice(0, 4).map(record => `
-                <div class="wallet-transfer-record">
-                  <div class="wallet-transfer-record-main">
-                    <span class="mono">${escapeHtml(record.transferId)}</span>
-                    <span class="tag tag-green">成功</span>
-                    <span>${escapeHtml(record.sourceWallet)} → ${escapeHtml(record.targetWallet)}</span>
-                    <strong class="mono">CNY ${formatMoney(record.amount)}</strong>
-                    <span class="wallet-transfer-record-actions">
-                      <button class="btn-link" type="button" data-action="transfer-detail" data-transfer="${escapeHtml(record.transferId)}">详情</button>
-                      <button class="btn-link" type="button" data-action="transfer-misreport" data-transfer="${escapeHtml(record.transferId)}">误划通知</button>
-                    </span>
-                  </div>
-                  <div class="wallet-transfer-record-sub">关联号 ${escapeHtml(record.correlationId)} · 双边流水 ${escapeHtml(record.ledgerIds.join(" / "))} · ${escapeHtml(record.occurredAt)} UTC+8</div>
-                </div>`).join("") || `<p class="modal-note" style="margin:0;padding:14px 18px;">暂无划转记录</p>`}</div>
-            </section>
-
-            <section class="wallet-showcase-panel">
-              <div class="wallet-section-head">
-                <div><h2>最近动态</h2><p>最近的三笔钱包变动</p></div>
-                <button class="btn-link" type="button" data-action="wallet-ledger" data-wallet="">查看全部</button>
-              </div>
-              <div class="wallet-activity-list">${walletShowcaseActivity.slice(0, 3).map(item => `<div class="wallet-activity"><span class="wallet-activity-dot ${activityDot(item.wallet)}"></span><div style="flex:1;min-width:0;"><div class="wallet-activity-main"><span>${item.title} · ${item.wallet}</span><strong>${item.amount}</strong></div><div class="wallet-activity-time"><i data-lucide="clock-3"></i>${item.time}</div></div></div>`).join("")}</div>
-            </section>
+            <div class="table-wrap">
+              <table class="rich-table">
+                <thead><tr><th>流水号</th><th>钱包</th><th>类型 / 方向</th><th>变动金额</th><th>关联业务 / 结果来源</th><th>发生时间</th><th>操作</th></tr></thead>
+                <tbody>${recentLedgerRows.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[7]}</td><td><span class="mono">${row[8]}</span></td><td>${row[9]}</td></tr>`).join("") || `<tr><td colspan="7"><div class="module-empty-row"><strong>暂无流水</strong><span>钱包发生资金变动后将在这里展示。</span></div></td></tr>`}</tbody>
+              </table>
+            </div>
           </section>
         </section>
       `;
-    }
-
-    function openWalletShowcaseDetail(trigger) {
-      const wallet = trigger.dataset.wallet || "CNY 代收钱包";
-      const details = walletShowcaseData[wallet];
-      if (!details) return;
-      const statusMeta = walletStatusMeta(details.status);
-      const isActive = details.status === "active";
-      const isWithdraw = wallet === "CNY 提款钱包";
-      const transferDirection = isWithdraw
-        ? "不可作为划转来源（不允许反向划转）"
-        : transferTargets(wallet).map(target => `${wallet} → ${target}`).join("；");
-      const transferLimit = !isActive
-        ? `当前状态「${details.status}」：${statusMeta.note}`
-        : isWithdraw
-          ? "不允许反向划转；历史余额与流水仍可查看"
-          : "只使用可用余额；提交时校验双钱包版本与幂等键";
-      const recentLedger = walletTransferLedgerRows.find(row => row.walletName === wallet);
-      const recentChangePairs = recentLedger
-        ? [
-            ["关联划转", `${recentLedger.transferId} · ${recentLedger.correlationId}`],
-            ["变动方向 / 金额", `${recentLedger.direction} CNY ${formatMoney(recentLedger.amount)}`],
-            ["总额（变动前 → 后）", `CNY ${formatMoney(recentLedger.before.total)} → CNY ${formatMoney(recentLedger.after.total)}`],
-            ["冻结（变动前 → 后）", `CNY ${formatMoney(recentLedger.before.frozen)} → CNY ${formatMoney(recentLedger.after.frozen)}`],
-            ["可用（变动前 → 后）", `CNY ${formatMoney(recentLedger.before.available)} → CNY ${formatMoney(recentLedger.after.available)}`],
-            ["双边流水", `${recentLedger.ledgerId} / ${recentLedger.pairedLedgerId}`],
-            ["发生时间", `${recentLedger.occurredAt} UTC+8`]
-          ]
-        : [
-            ["最近变动", `${details.recent} · ${details.recentTime}`],
-            ["逐笔追溯", "在账户流水中按本钱包筛选查看"]
-          ];
-      const riskHold = wallet === "CNY 代付钱包" ? walletRiskHoldInfo() : null;
-      document.getElementById("drawerTitle").textContent = `${wallet}详情`;
-      document.getElementById("drawerBody").innerHTML = `
-        <p class="modal-note">查看当前余额、冻结情况、最近变动和划转限制。</p>
-        ${detailSection("余额概览", `状态：${details.status}${statusMeta.note ? ` · ${statusMeta.note}` : ""}`, [["当前总额", `CNY ${formatMoney(details.total)}`], ["冻结金额", `CNY ${formatMoney(details.frozen)}`], ["可用余额", `CNY ${formatMoney(details.total - details.frozen)}`], ["钱包版本", `v${details.version}`], ["最近变动", `${details.recent} · ${details.recentTime}`]])}
-        ${detailSection("最近资金变动", recentLedger ? `关联编号 ${recentLedger.correlationId}` : "本会话暂无划转变动", recentChangePairs)}
-        ${detailSection("冻结明细", details.frozenItems.length ? `共 ${details.frozenItems.length} 笔，按来源逐笔追溯` : "当前没有冻结记录", details.frozenItems.flatMap(item => [[`${item.source} · ${item.reference}`, `${item.amount} · ${item.status}`], ["开始时间 / 解除条件", `${item.started} · ${item.release}`]]))}
-        ${riskHold ? detailSection("风险冻结详情", "迟到成功风险冻结 · 不展示商户钱包", [["关联订单 / 冻结编号", `HS-P-260717-000220 · ${riskHold.id}`], ["风险冻结流水", riskHold.ledgerId], ["应冻结金额", `CNY ${formatMoney(riskHold.expected)}`], ["实际冻结金额", `CNY ${formatMoney(riskHold.held)}`], ["待补足金额", `CNY ${formatMoney(riskHold.shortage)}`], ["建立时间", "2026-07-17 16:06 UTC+8"], ["当前状态", "生效中"], ["关联资金更正", `${riskHold.correctionId} · ${riskHold.correctionStatus}`], ["解除条件", "平台确认错误回调后释放，或经资金更正转换为最终补扣；只有同租户 CNY 无其他未解决差额时才清除新代付与提款限制"]]) : ""}
-        ${detailSection("划转方向与限制", "按允许路径实时调拨", [["可执行划转方向", transferDirection], ["当前限制", transferLimit], ["可执行操作", details.route]])}
-        <div class="panel-actions"><button class="btn btn-primary" type="button" data-action="wallet-ledger" data-wallet="${wallet}"><i data-lucide="list-tree"></i>查看流水</button></div>`;
-      openDrawer();
     }
 
     function openTransferDetail(trigger) {
@@ -27516,11 +27581,7 @@
       }
       document.getElementById("drawerTitle").textContent = `划转详情 · ${transferId}`;
       document.getElementById("drawerBody").innerHTML = `
-        <p class="modal-note">已成功的内部划转不可撤回，也不提供反向划转按钮。发现误划时，可在此查看原编号并通知平台处理。</p>
-        ${detailSection("划转信息", `状态：${record.status === "succeeded" ? "成功" : record.status}`, [["划转编号", record.transferId], ["关联号", record.correlationId], ["来源钱包", record.sourceWallet], ["目标钱包", record.targetWallet], ["划转金额", `CNY ${formatMoney(record.amount)}`], ["用途说明", record.purpose || "-"], ["幂等标识", record.idempotencyKey || "-"], ["发生时间", `${record.occurredAt} UTC+8`]])}
-        ${detailSection("双边记账", "同一关联号下的一笔出账和一笔入账", [["来源出账流水", record.ledgerIds[0]], ["目标入账流水", record.ledgerIds[1]], ["来源总额（前 → 后）", `CNY ${formatMoney(record.sourceBefore.total)} → CNY ${formatMoney(record.sourceAfter.total)}`], ["来源可用（前 → 后）", `CNY ${formatMoney(record.sourceBefore.available)} → CNY ${formatMoney(record.sourceAfter.available)}`], ["目标总额（前 → 后）", `CNY ${formatMoney(record.targetBefore.total)} → CNY ${formatMoney(record.targetAfter.total)}`], ["目标可用（前 → 后）", `CNY ${formatMoney(record.targetBefore.available)} → CNY ${formatMoney(record.targetAfter.available)}`], ["两边冻结", "均不变化"], ["来源版本（前 → 后）", `v${record.sourceBefore.version} → v${record.sourceAfter.version}`], ["目标版本（前 → 后）", `v${record.targetBefore.version} → v${record.targetAfter.version}`], ["审计号", record.auditId]])}
-        ${detailSection("误划处理", "原划转和原流水不得修改或删除", [["处理方式", "平台另建关联原划转的资金更正申请；申请人与审核人分离，审核通过后追加双边更正流水"], ["操作", "点击下方按钮通知平台，由平台建立资金更正申请"]])}
-        <div class="panel-actions"><button class="btn btn-primary" type="button" data-action="transfer-misreport" data-transfer="${escapeHtml(record.transferId)}"><i data-lucide="message-square-warning"></i>误划通知平台</button><button class="btn" type="button" data-action="wallet-ledger" data-wallet="${escapeHtml(record.sourceWallet)}">查看来源流水</button></div>`;
+        ${detailSection("划转信息", `状态：${record.status === "succeeded" ? "成功" : record.status}`, [["划转编号", record.transferId], ["关联号", record.correlationId], ["来源商户 / 钱包", `${record.sourceMerchantName || "-"} · ${record.sourceMerchantId || "-"} / ${record.sourceWallet}`], ["目标商户 / 钱包", `${record.targetMerchantName || "-"} · ${record.targetMerchantId || "-"} / ${record.targetWallet}`], ["划转金额", `CNY ${formatMoney(record.amount)}`], ["手续费", "CNY 0.00"], ["用途说明", record.purpose || "-"], ["完成时间", `${record.occurredAt} UTC+8`]])}`;
       openDrawer();
     }
 
@@ -27533,10 +27594,41 @@
       </div>`;
     }
 
+    function renderTenantGlobalOrderTrackingPage() {
+      const page = modulePages["全局订单追踪"];
+      const metricIcons = ["list-tree", "triangle-alert", "bell-ring"];
+      return `
+        <section class="page-head" data-astryx="PageHeader">
+          <div>
+            <h1 class="page-title">${page.title}</h1>
+            <p class="page-subtitle">${page.subtitle}</p>
+          </div>
+          <div class="page-actions" data-astryx="ActionGroup">
+            <button class="btn" type="button" data-action="refresh-page"><i data-lucide="refresh-cw"></i>刷新</button>
+            <button class="btn btn-primary" type="button" data-action="export"><i data-lucide="download"></i>导出当前视图</button>
+          </div>
+        </section>
+        <section class="metric-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));" data-astryx="KPIGrid">
+          ${page.metrics.map((item, index) => `<article class="metric-card" data-astryx="KPIStatCard"><div><div class="metric-label"><span>${item[0]}</span><i data-lucide="${metricIcons[index]}"></i></div><div class="metric-value">${item[1]}</div></div><div class="metric-sub"><span>${item[2]}</span></div></article>`).join("")}
+        </section>
+        <section class="panel data-panel" data-astryx="DataPanel">
+          <div class="panel-header"><h2 class="panel-title">全生命周期记录列表</h2></div>
+          ${moduleFiltersHtml(page.filters)}
+          ${moduleActionsHtml(page.actions, page.tableHint)}
+          ${moduleTableHtml(page.columns, page.rows, { minWidth: page.tableMinWidth })}
+        </section>
+      `;
+    }
+
     function renderModulePage(pageName) {
       if (pageName === "平台钱包") return renderWalletShowcasePage();
       if (pageName === "法币代收订单" || pageName === "法币代付订单") return renderBlueTenantOrderPage(pageName);
-      const page = pageName === "法币代收订单" || pageName === "法币代付订单" ? tenantOrderModulePage(pageName) : modulePages[pageName];
+      if (pageName === "全局订单追踪") return renderTenantGlobalOrderTrackingPage();
+      const page = pageName === "资金划转"
+        ? walletTransferOrderPage()
+        : pageName === "法币代收订单" || pageName === "法币代付订单"
+          ? tenantOrderModulePage(pageName)
+          : modulePages[pageName];
       const base = page || {
         title: pageName,
         subtitle: "该页面已进入租户端导航，后续按页面单独补 PRD。",
@@ -27567,7 +27659,7 @@
         <section class="panel data-panel" data-astryx="DataPanel">
           <div class="panel-header">
             <div>
-              <h2 class="panel-title">${pageName === "通知中心" ? (state.notificationSegment === "merchant" ? "商户自有系统通知" : "运营告警") : resolved.title}列表</h2>
+              <h2 class="panel-title">${pageName === "通知中心" ? (state.notificationSegment === "merchant" ? "商户自有系统通知" : "运营告警") : pageName === "资金划转" ? "划转订单" : `${resolved.title}列表`}</h2>
               <p class="panel-subtitle">页面数据默认限定当前租户 HS-TEN-001。</p>
             </div>
           </div>
@@ -27631,11 +27723,12 @@
       payout: "法币代付订单",
       channels: "授权通道",
       wallets: "平台钱包",
-      funds: "资金申请",
+      funds: "资金划转",
       ledger: "账户流水",
       reconciliation: "日终报表",
       exports: "导出任务",
       reports: "经营报表",
+      "order-tracking": "全局订单追踪",
       todos: "业务待办",
       tickets: "工单协同",
       notifications: "通知中心"
@@ -27666,8 +27759,8 @@
     const tenantExportPermissionByPage = {
       "总览工作台": "tenant.dashboard.export", "法币代收订单": "tenant.collect.export", "代收退款审核": "tenant.refund.export",
       "法币代付订单": "tenant.payout.export", "授权通道": "tenant.channel_authorization.export", "平台钱包": "tenant.platform_wallet.export",
-      "资金申请": "tenant.fund_application.export", "账户流水": "tenant.ledger.export", "日终报表": "tenant.reconciliation.export",
-      "经营报表": "tenant.report.export", "工单协同": "tenant.ticket.export", "通知中心": "tenant.notification.export"
+      "资金划转": "tenant.wallet_transfer.export", "账户流水": "tenant.ledger.export", "日终报表": "tenant.reconciliation.export",
+      "经营报表": "tenant.report.export", "全局订单追踪": "tenant.report.export", "工单协同": "tenant.ticket.export", "通知中心": "tenant.notification.export"
     };
     const tenantExportPermissionCodes = new Set(Object.values(tenantExportPermissionByPage));
 
@@ -27688,8 +27781,7 @@
       if (kind === "block-ip") return "tenant.collect.ip_block";
       if (kind === "recreate-payout") return "tenant.payout.reorder";
       if (kind === "reverse-payout") return "tenant.payout.reverse";
-      if (kind === "internal-transfer") return "tenant.wallet.transfer";
-      if (kind === "transfer-misreport") return "tenant.wallet.transfer";
+      if (kind === "internal-transfer") return "tenant.wallet_transfer.create";
       if (["create-deposit", "create-withdrawal", "manual-credit", "manual-debit", "confirm-deposit-paid", "append-proof", "copy-funds"].includes(kind)) return "tenant.fund_application.create";
       if (kind === "add-withdraw-account") return "tenant.withdrawal_account.manage";
       if (kind === "cancel-funds") return "tenant.fund_application.withdraw";
@@ -28840,7 +28932,42 @@
       let actions = "";
       let notificationDetailEventId = "";
 
-      if (action === "order-detail") {
+      if (action === "tracking-detail") {
+        const identifiers = [...(row.cells[1]?.querySelectorAll(".mono") || [])].map((node) => node.textContent.trim()).filter(Boolean);
+        const merchantParts = [...(row.cells[2]?.querySelectorAll("strong, .mono") || [])].map((node) => node.textContent.trim()).filter(Boolean);
+        const status = value(4);
+        const isException = status.includes("异常") || value(5) !== "-";
+        title = value(0);
+        intro = "";
+        body += detailSection("订单信息", "", [
+          ["平台订单号", value(0)],
+          ["通道订单号", identifiers[0] || "-"],
+          ["商户订单号", identifiers[1] || "-"],
+          ["商户名称", merchantParts[0] || "-"],
+          ["商户编号", merchantParts[1] || "-"],
+          ["订单类型 / 金额", value(3)],
+          ["当前状态", status],
+          ["异常节点", value(5)],
+          ["结果摘要", value(6)],
+          ["通知结果", value(7)],
+          ["更新时间", `${value(8)} · UTC+8`]
+        ]);
+        body += detailSection("生命周期节点", "", isException ? [
+          ["请求受理", "已完成 · 14:31:02"],
+          ["商户与业务校验", "已通过 · 14:31:02"],
+          ["平台订单创建", "已完成 · 14:31:03"],
+          ["提交通道", "已完成 · 14:31:04"],
+          [value(5), `${value(6)} · 待继续确认`]
+        ] : [
+          ["请求受理", "已完成 · 14:31:02"],
+          ["商户与业务校验", "已通过 · 14:31:02"],
+          ["平台订单创建", "已完成 · 14:31:03"],
+          ["提交通道", "已完成 · 14:31:04"],
+          ["订单终态", `${value(6)} · ${value(8).slice(-8)}`]
+        ]);
+        body += detailSection("通知记录", "", [["当前结果", value(7)], ["可见状态", "已与平台订单结果同步"], ["最近更新时间", `${value(8)} · UTC+8`]]);
+        actions = "";
+      } else if (action === "order-detail") {
         const systemOrderNo = value(0);
         const identifiers = [...(row.cells[1]?.querySelectorAll(".mono") || [])].map((node) => node.textContent.trim()).filter(Boolean);
         const channelOrderNo = identifiers[0] || "-";
@@ -29034,7 +29161,7 @@
         actions = detailSourceButton("工单协同", value(0), "查看关联工单");
       }
 
-      const isBlueOrderDetail = ["order-detail", "blue-payout-detail"].includes(action);
+      const isBlueOrderDetail = ["tracking-detail", "order-detail", "blue-payout-detail"].includes(action);
       document.getElementById("drawerTitle").textContent = title;
       document.getElementById("drawerBody").innerHTML = `${intro ? `<p class="modal-note">${escapeHtml(intro)}</p>` : ""}${body}${actions ? `<div class="panel-actions">${actions}</div>` : ""}${isBlueOrderDetail ? "" : `<section class="panel" style="box-shadow:none;"><div class="panel-header"><h2 class="panel-title">审计说明</h2></div><div class="panel-body"><p class="muted">详情查看、来源跳转、安全复制、敏感查看和导出均按当前账号、当前租户和 UTC+8 永久留痕。</p></div></section>`}`;
       tenantPendingDrawerNotificationEventId = notificationDetailEventId;
@@ -29049,7 +29176,7 @@
       if (!tenantPagination.has(pageName)) {
         tenantPagination.set(pageName, {
           page: 1,
-          pageSize: ["法币代收订单", "法币代付订单"].includes(pageName) ? 10 : 3
+          pageSize: ["法币代收订单", "法币代付订单", "全局订单追踪"].includes(pageName) ? 10 : 3
         });
       }
       return tenantPagination.get(pageName);
@@ -29321,6 +29448,8 @@
       const targetWallet = walletShowcaseData[target];
       if (!sourceWallet || !targetWallet) return false;
       return executeWalletTransfer({
+        sourceMerchantId: currentTenantAccount.authorizedMerchantIds[0],
+        targetMerchantId: currentTenantAccount.authorizedMerchantIds[1] || currentTenantAccount.authorizedMerchantIds[0],
         sourceWallet: source,
         targetWallet: target,
         amount,
@@ -29375,9 +29504,9 @@
       modulePages["业务待办"].metrics[1][1] = String(current.filter((item) => item.type === "代收订单处置").length);
       modulePages["业务待办"].metrics[2][1] = String(current.filter((item) => item.type === "代付订单处置").length);
       modulePages["业务待办"].metrics[3][1] = String(current.filter((item) => item.type === "异常订单" || item.type === "商户通知失败").length);
-      modulePages["业务待办"].metrics[4][1] = String(current.filter((item) => item.type === "资金申请处理" || item.type === "日终报表差异").length);
+      modulePages["业务待办"].metrics[4][1] = String(current.filter((item) => item.type === "日终报表差异").length);
       const alertText = document.querySelector(".alert-strip .alert-left span");
-      if (alertText) alertText.innerHTML = `<strong>待处理 ${current.length} 项：</strong>订单处置、异常、通知、资金与核对均按当前来源版本处理。`;
+      if (alertText) alertText.innerHTML = `<strong>待处理 ${current.length} 项：</strong>订单处置、异常、通知与核对均按当前来源版本处理。`;
     }
 
     function tenantTodoBySource(sourceId) {
@@ -29411,30 +29540,8 @@
       syncTenantTodoCounts();
     }
 
-    function addTenantFundsTodo({ requestNo, type, amount, status }) {
-      if (status !== "待付款" || tenantTodoBySource(requestNo)) return false;
-      tenantFactCounts.addedTodos += 1;
-      const projection = {
-        id: `TD-20260719-${String(tenantTodoSequence++).padStart(3, "0")}`,
-        type: "资金申请处理",
-        sourceId: requestNo,
-        sourceVersion: 1,
-        actionableState: "待付款",
-        target: "资金申请",
-        party: type,
-        amount: `CNY ${formatMoney(amount)}`,
-        wait: "刚刚",
-        progress: "新申请已建立，待确认付款或撤回",
-        permission: "提交后等待平台，不再计待办",
-        actionLabel: "处理付款",
-        direction: "general",
-        enteredAt: tenantNow(),
-        current: true
-      };
-      tenantTodoProjections.unshift(projection);
-      tenantTodoSourceState.set(requestNo, { version: 1, actionable: true, state: "待付款", progress: projection.progress });
-      syncTenantTodoRows();
-      return true;
+    function addTenantFundsTodo() {
+      return false;
     }
 
     function updateTenantTodo(requestNo, progress, status, { version, actionable = true } = {}) {
@@ -29536,36 +29643,52 @@
       return source === "CNY 代付钱包" ? ["CNY 提款钱包"] : ["CNY 代付钱包", "CNY 提款钱包"];
     }
 
-    function setupTransferPreview() {
+    function walletTransferAccountValue(merchantId, walletName) {
+      return `${merchantId}::${walletName}`;
+    }
+
+    function parseWalletTransferAccount(value) {
+      const [merchantId = "", walletName = ""] = String(value || "").split("::");
+      const merchant = walletTransferMerchants.find((item) => item.merchantId === merchantId);
+      return merchant && walletName ? { merchantId, merchantName: merchant.merchantName, walletName } : null;
+    }
+
+    function walletTransferAccounts(walletNames) {
+      return walletTransferMerchants
+        .filter((merchant) => currentTenantAccount.authorizedMerchantIds.includes(merchant.merchantId))
+        .flatMap((merchant) => walletNames.map((walletName) => ({ ...merchant, walletName, value: walletTransferAccountValue(merchant.merchantId, walletName), label: `${merchant.merchantName} · ${merchant.merchantId} / ${walletName}` })));
+    }
+
+    function walletTransferAccountOptions(walletNames) {
+      return walletTransferAccounts(walletNames).map((account) => `<option value="${escapeHtml(account.value)}">${escapeHtml(account.label)}</option>`).join("");
+    }
+
+    function setupTransferForm() {
       const source = document.getElementById("transferSource");
       const target = document.getElementById("transferTarget");
-      const amount = document.getElementById("transferAmount");
-      const preview = document.getElementById("transferPreview");
       const sourceVersion = document.getElementById("transferExpectedSourceVersion");
       const targetVersion = document.getElementById("transferExpectedTargetVersion");
-      const versionSummary = document.getElementById("transferVersionSummary");
-      if (!source || !target || !amount || !preview) return;
+      if (!source || !target) return;
       const refreshTargets = () => {
         const current = target.value;
-        target.innerHTML = transferTargets(source.value).map((item) => `<option value="${item}">${item}</option>`).join("");
-        if (transferTargets(source.value).includes(current)) target.value = current;
+        const sourceAccount = parseWalletTransferAccount(source.value);
+        const targetAccounts = sourceAccount ? walletTransferAccounts(transferTargets(sourceAccount.walletName)) : [];
+        target.innerHTML = `<option value="">请选择目标商户及钱包</option>${targetAccounts.map((account) => `<option value="${escapeHtml(account.value)}">${escapeHtml(account.label)}</option>`).join("")}`;
+        target.disabled = !sourceAccount;
+        if (targetAccounts.some((account) => account.value === current)) target.value = current;
       };
-      const refreshPreview = () => {
-        const value = parseMoney(amount.value);
-        const sourceWallet = walletShowcaseData[source.value];
-        const targetWallet = walletShowcaseData[target.value];
-        const sourceAvailable = walletAvailable(source.value);
-        const targetAvailable = walletAvailable(target.value);
+      const refreshVersions = () => {
+        const sourceAccount = parseWalletTransferAccount(source.value);
+        const targetAccount = parseWalletTransferAccount(target.value);
+        const sourceWallet = walletShowcaseData[sourceAccount?.walletName];
+        const targetWallet = walletShowcaseData[targetAccount?.walletName];
         if (sourceVersion) sourceVersion.value = String(sourceWallet?.version ?? "");
         if (targetVersion) targetVersion.value = String(targetWallet?.version ?? "");
-        if (versionSummary) versionSummary.textContent = `提交预期版本：来源 v${sourceWallet?.version ?? "-"} / 目标 v${targetWallet?.version ?? "-"}；版本变化时会拒绝并要求重新确认。`;
-        preview.textContent = `来源：总额 CNY ${formatMoney(sourceWallet?.total || 0)}、冻结 CNY ${formatMoney(sourceWallet?.frozen || 0)}、可用 CNY ${formatMoney(sourceAvailable)} → CNY ${formatMoney(sourceAvailable - value)}；目标：总额 CNY ${formatMoney(targetWallet?.total || 0)}、冻结 CNY ${formatMoney(targetWallet?.frozen || 0)}、可用 CNY ${formatMoney(targetAvailable)} → CNY ${formatMoney(targetAvailable + value)}。`;
       };
-      source.addEventListener("change", () => { refreshTargets(); refreshPreview(); });
-      target.addEventListener("change", refreshPreview);
-      amount.addEventListener("input", refreshPreview);
+      source.addEventListener("change", () => { refreshTargets(); refreshVersions(); });
+      target.addEventListener("change", refreshVersions);
       refreshTargets();
-      refreshPreview();
+      refreshVersions();
     }
 
     function openWithdrawalAccountsDrawer() {
@@ -29809,38 +29932,18 @@
             <label class="field full"><span>二次确认</span><span><input id="confirmBusinessAction" type="checkbox"> 我确认封禁只作用于后续请求，不改变历史订单</span></label>
           </div>`;
       } else if (kind === "internal-transfer") {
-        const sourceValue = trigger.dataset.source || "CNY 代收钱包";
         const requestKey = `TENANT-WTR-${String(walletTransferUiSequence++).padStart(4, "0")}`;
-        title = "发起钱包划转";
+        title = "发起商户钱包划转";
         confirmText = "确认划转";
         body = `
-          <p class="modal-note">选择来源和到账钱包；确认后由平台钱包服务原子更新双钱包并生成同关联号双边流水，不产生平台审核待办。</p>
           <div class="modal-grid">
-            <div class="field"><label for="transferSource">来源钱包</label><select class="select" id="transferSource"><option ${sourceValue === "CNY 代收钱包" ? "selected" : ""}>CNY 代收钱包</option><option ${sourceValue === "CNY 代付钱包" ? "selected" : ""}>CNY 代付钱包</option></select></div>
-            <div class="field"><label for="transferTarget">目标钱包</label><select class="select" id="transferTarget"></select></div>
+            <div class="field"><label for="transferSource">来源商户 / 钱包</label><select class="select" id="transferSource"><option value="">请选择来源商户及钱包</option>${walletTransferAccountOptions(["CNY 代收钱包", "CNY 代付钱包"])}</select></div>
+            <div class="field"><label for="transferTarget">目标商户 / 钱包</label><select class="select" id="transferTarget" disabled><option value="">请先选择来源商户及钱包</option></select></div>
             <div class="field"><label for="transferAmount">划转金额</label><input class="input mono" id="transferAmount" inputmode="decimal" pattern="[0-9]+([.][0-9]{1,2})?" data-cny-amount value="1000.00" placeholder="CNY 金额，最多两位小数"></div>
             <div class="field"><label for="transferReason">用途说明</label><input class="input" id="transferReason" value="日常资金调拨" maxlength="100"></div>
-            <div class="field full"><label for="transferIdempotencyKey">本次提交标识</label><input class="input mono" id="transferIdempotencyKey" value="${requestKey}" readonly><span class="muted">网络中断或重复提交必须复用此标识；不得修改金额后复用。</span></div>
             <div class="field full"><label for="twoFactorCode">Google 2FA 验证码</label><input class="input mono" id="twoFactorCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="请输入 6 位验证码"></div>
+            <input type="hidden" id="transferIdempotencyKey" value="${requestKey}">
             <input type="hidden" id="transferExpectedSourceVersion"><input type="hidden" id="transferExpectedTargetVersion">
-            <p class="modal-note full" id="transferVersionSummary"></p>
-            <p class="modal-note full" id="transferPreview"></p>
-            <label class="field full"><span>二次确认</span><span><input id="confirmBusinessAction" type="checkbox"> 我已核对来源、目标和金额</span></label>
-          </div>`;
-      } else if (kind === "transfer-misreport") {
-        const transferId = trigger.dataset.transfer || "";
-        const record = walletTransferFacts.get(transferId);
-        title = "误划通知平台";
-        confirmText = "确认通知";
-        body = `
-          <p class="modal-note">已成功的内部划转不可撤回。误划只能由平台另建关联原划转的资金更正申请处理；本通知不直接修改钱包、流水或订单。</p>
-          <div class="modal-grid">
-            <div class="field"><span>原划转编号</span><div class="input mono" style="display:flex;align-items:center;">${escapeHtml(transferId)}</div></div>
-            <div class="field"><span>关联号</span><div class="input mono" style="display:flex;align-items:center;">${escapeHtml(record?.correlationId || "-")}</div></div>
-            <div class="field"><span>来源 → 目标</span><div class="input" style="display:flex;align-items:center;">${escapeHtml(record?.sourceWallet || "-")} → ${escapeHtml(record?.targetWallet || "-")}</div></div>
-            <div class="field"><span>划转金额</span><div class="input mono" style="display:flex;align-items:center;">CNY ${formatMoney(record?.amount || 0)}</div></div>
-            <div class="field full"><label for="misreportReason">误划说明</label><textarea class="input" id="misreportReason" rows="3" maxlength="200" placeholder="请说明误划原因、期望的更正方向（至少 4 个字）"></textarea></div>
-            <label class="field full"><span>确认</span><span><input id="confirmBusinessAction" type="checkbox"> 我确认只通知平台，不直接修改资金</span></label>
           </div>`;
       } else if (kind === "create-deposit") {
         title = "创建外部存款申请";
@@ -30001,7 +30104,7 @@
       document.getElementById("modalBody").innerHTML = body;
       document.getElementById("modalMask").classList.add("show");
       document.getElementById("modalMask").setAttribute("aria-hidden", "false");
-      if (kind === "internal-transfer") setupTransferPreview();
+      if (kind === "internal-transfer") setupTransferForm();
       if (kind === "select-channel") {
         const choice = document.getElementById("actionChoice");
         const productChoice = document.getElementById("actionProduct");
@@ -30222,6 +30325,19 @@
         if (!applyBusinessEvidenceFeedback(evidenceInput, evidenceResult)) return;
       }
 
+      if (kind === "internal-transfer") {
+        if (!document.getElementById("transferSource")?.value) {
+          showToast("请选择来源商户及钱包");
+          document.getElementById("transferSource")?.focus();
+          return;
+        }
+        if (!document.getElementById("transferTarget")?.value) {
+          showToast("请选择目标商户及钱包");
+          document.getElementById("transferTarget")?.focus();
+          return;
+        }
+      }
+
       const requiresTwoFactor = ["internal-transfer", "create-deposit", "create-withdrawal", "manual-credit", "manual-debit", "confirm-deposit-paid", "append-proof", "cancel-funds", "add-withdraw-account", "review-refund", "review-payout", "manual-order-repair", "recreate-payout", "reverse-payout", "block-ip"];
       if (requiresTwoFactor.includes(kind)) {
         const codeField = document.getElementById("twoFactorCode");
@@ -30234,8 +30350,12 @@
       }
 
       if (kind === "internal-transfer") {
-        const source = document.getElementById("transferSource").value;
-        const target = document.getElementById("transferTarget").value;
+        const sourceField = document.getElementById("transferSource");
+        const targetField = document.getElementById("transferTarget");
+        const sourceAccount = parseWalletTransferAccount(sourceField.value);
+        const targetAccount = parseWalletTransferAccount(targetField.value);
+        const source = sourceAccount?.walletName || "";
+        const target = targetAccount?.walletName || "";
         const amount = parseCnyInput(document.getElementById("transferAmount").value);
         const reason = document.getElementById("transferReason").value.trim();
         const idempotencyKey = document.getElementById("transferIdempotencyKey").value;
@@ -30243,6 +30363,11 @@
         const expectedTargetVersion = Number(document.getElementById("transferExpectedTargetVersion").value);
         const code = document.getElementById("twoFactorCode").value.trim();
         const available = walletAvailable(source);
+        if (!sourceAccount || !targetAccount) {
+          showToast("请选择完整的来源与目标商户钱包");
+          (sourceAccount ? targetField : sourceField).focus();
+          return;
+        }
         if (!transferTargets(source).includes(target) || source === target) {
           showToast("该钱包划转路径不允许");
           return;
@@ -30261,15 +30386,15 @@
           document.getElementById("transferReason").focus();
           return;
         }
-        const result = executeWalletTransfer({ sourceWallet: source, targetWallet: target, amount, purpose: reason, idempotencyKey, expectedSourceVersion, expectedTargetVersion, authorized: currentTenantAccount.canTransfer, twoFactorVerified: code === currentTenantAccount.google2fa });
+        const result = executeWalletTransfer({ sourceMerchantId: sourceAccount.merchantId, targetMerchantId: targetAccount.merchantId, sourceWallet: source, targetWallet: target, amount, purpose: reason, idempotencyKey, expectedSourceVersion, expectedTargetVersion, authorized: currentTenantAccount.canTransfer, twoFactorVerified: code === currentTenantAccount.google2fa });
         if (!result.ok) {
           showTenantOperationFeedback({ tone: "error", title: `${result.code} · 划转未执行`, message: `${result.message} 两边钱包和流水均未变化。`, action: result.code === "STATE_VERSION_CONFLICT" ? "refresh" : "" });
           return;
         }
-        recordTenantFact({ title: "平台钱包内部划转完成", object: result.transferId, status: `CNY ${formatMoney(amount)} · ${result.correlationId} · ${result.ledgerIds.join(" / ")}`, target: "账户流水", action: "平台钱包内部划转" });
+        recordTenantFact({ title: "商户钱包内部划转完成", object: result.transferId, status: `${result.sourceMerchantName} · ${result.sourceMerchantId} / ${result.sourceWallet} → ${result.targetMerchantName} · ${result.targetMerchantId} / ${result.targetWallet} · CNY ${formatMoney(amount)} · ${result.correlationId}`, target: "账户流水", action: "商户钱包内部划转" });
         closeActionModal();
-        if (state.activePage === "平台钱包") renderNavPage("平台钱包");
-        showToast(`${result.duplicate ? "已返回原划转" : "划转完成"}：${result.transferId}，双边流水已生成`);
+        if (state.activePage === "平台钱包" || state.activePage === "资金划转") renderNavPage(state.activePage);
+        showToast(`${result.duplicate ? "已返回原划转" : "划转完成"}：${result.transferId}`);
         return;
       }
 
@@ -30591,22 +30716,6 @@
         if (tenantTodoBySource(sourceNo)) updateTenantTodo(sourceNo, "已通知平台运营联系通道商；原订单仍需跟进", "异常待处理");
         closeActionModal();
         showToast("已通知平台运营联系通道商，订单状态和钱包保持不变");
-        return;
-      }
-
-      if (kind === "transfer-misreport") {
-        const transferId = trigger.dataset.transfer || "";
-        const reason = document.getElementById("misreportReason").value.trim();
-        if (reason.length < 4) {
-          showToast("请填写至少 4 个字的误划说明");
-          document.getElementById("misreportReason").focus();
-          return;
-        }
-        const record = walletTransferFacts.get(transferId);
-        const correctionId = `FC-${transferId.slice(-8)}-MR`;
-        recordTenantFact({ title: "误划通知已提交", object: transferId, status: `待平台建立资金更正 · ${correctionId}`, target: "平台钱包", action: "误划通知" });
-        closeActionModal();
-        showToast(`已通知平台；原划转 ${transferId} 与双边流水保持不变，平台将另建资金更正申请 ${correctionId}`);
         return;
       }
 
@@ -31324,11 +31433,9 @@
           openFundsDetail(actionButton);
         } else if (action === "ledger-detail") {
           openLedgerDetail(actionButton);
-        } else if (action === "wallet-showcase-detail") {
-          openWalletShowcaseDetail(actionButton);
         } else if (action === "transfer-detail") {
           openTransferDetail(actionButton);
-        } else if (["order-detail", "refund-detail", "blue-payout-detail", "payout-detail", "channel-detail", "wallet-detail", "recon-detail", "ticket-detail", "notification-detail"].includes(action)) {
+        } else if (["tracking-detail", "order-detail", "refund-detail", "blue-payout-detail", "payout-detail", "channel-detail", "wallet-detail", "recon-detail", "ticket-detail", "notification-detail"].includes(action)) {
           openOperationalDetail(action, actionButton);
         } else if (action === "acknowledge-alert") {
           const alert = tenantOperationalAlerts.find((item) => item.alertId === actionButton.dataset.alertId);
@@ -31341,14 +31448,14 @@
           syncTenantNotificationProjection();
           renderNavPage("通知中心");
           showToast("已标记当前运营告警为已读；其他用户阅读状态和业务事实未改变");
-        } else if (["select-channel", "review-refund", "review-payout", "notify-channel", "show-sensitive", "resubmit-guidance", "notice-retry", "cancel-order", "cancel-payout-order", "manual-order-repair", "block-ip", "recreate-payout", "reverse-payout", "export", "internal-transfer", "transfer-misreport", "create-deposit", "create-withdrawal", "manual-credit", "manual-debit", "confirm-deposit-paid", "append-proof", "cancel-funds", "add-withdraw-account", "notify-recon", "copy-funds", "create-ticket", "create-related-ticket", "ticket-reply", "ticket-supplement", "ticket-unresolved", "ticket-cancel", "confirm-ticket-resolution"].includes(action)) {
+        } else if (["select-channel", "review-refund", "review-payout", "notify-channel", "show-sensitive", "resubmit-guidance", "notice-retry", "cancel-order", "cancel-payout-order", "manual-order-repair", "block-ip", "recreate-payout", "reverse-payout", "export", "internal-transfer", "create-deposit", "create-withdrawal", "manual-credit", "manual-debit", "confirm-deposit-paid", "append-proof", "cancel-funds", "add-withdraw-account", "notify-recon", "copy-funds", "create-ticket", "create-related-ticket", "ticket-reply", "ticket-supplement", "ticket-unresolved", "ticket-cancel", "confirm-ticket-resolution"].includes(action)) {
           if (document.getElementById("drawer").classList.contains("show")) closeDrawer();
           openActionModal(action, actionButton);
         } else if (action === "manage-withdraw-accounts") {
           openWithdrawalAccountsDrawer();
-        } else if (action === "go-funds") {
+        } else if (action === "go-transfers") {
           closeDrawer();
-          document.querySelector('[data-nav="资金申请"]')?.click();
+          document.querySelector('[data-nav="资金划转"]')?.click();
         } else if (action === "wallet-ledger") {
           closeDrawer();
           document.querySelector('[data-nav="账户流水"]')?.click();
@@ -31617,8 +31724,8 @@
         currentTenantAccount.role = event.target.value;
         currentTenantAccount.canTransfer = profile.canTransfer;
         currentTenantAccount.canExport = profile.canExport;
-        if (profile.canTransfer) currentTenantAccount.actionPermissions.add("tenant.wallet.transfer");
-        else currentTenantAccount.actionPermissions.delete("tenant.wallet.transfer");
+        if (profile.canTransfer) currentTenantAccount.actionPermissions.add("tenant.wallet_transfer.create");
+        else currentTenantAccount.actionPermissions.delete("tenant.wallet_transfer.create");
         tenantExportPermissionCodes.forEach(code => profile.canExport ? currentTenantAccount.actionPermissions.add(code) : currentTenantAccount.actionPermissions.delete(code));
         renderNavPage("平台钱包");
         showToast(`已切换为${profile.label}`);

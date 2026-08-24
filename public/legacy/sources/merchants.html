@@ -21554,6 +21554,16 @@
       }
     ];
 
+    const tenantMerchantLoginAccess = {
+      loginDomain: "tenant-001.merchant.hs-pay.com",
+      loginDomainStatus: "可用",
+      scope: "当前租户下全部商户共用"
+    };
+
+    function ensureMerchantLoginDomain() {
+      return tenantMerchantLoginAccess;
+    }
+
     const tagClass = {
       "正常": "green",
       "开启": "green",
@@ -21563,6 +21573,8 @@
       "停用": "red",
       "暂停": "red",
       "已停用": "red",
+      "可用": "green",
+      "未启用": "orange",
       "待配置": "orange",
       "待审核": "orange",
       "已通过": "green",
@@ -23408,6 +23420,11 @@
               <label>当前状态</label>
               <input class="input" value="${item.status}" readonly>
             </div>
+            <div class="field wide">
+              <label>商户后台登录地址</label>
+              <input class="input mono" value="https://${escapeHtml(ensureMerchantLoginDomain().loginDomain)}/login" readonly>
+              <small>共享入口状态：${escapeHtml(tenantMerchantLoginAccess.loginDomainStatus)}。当前租户下全部商户共用，账号登录后再识别具体商户。</small>
+            </div>
           </div>
           <div class="field-error" id="modalError" role="alert"></div>
           <div class="toolbar" data-astryx="FooterActions">
@@ -23623,14 +23640,16 @@
     }
 
     function renderAccess(item) {
+      const merchantLoginAccess = ensureMerchantLoginDomain();
       return `
         <div class="info-grid" data-astryx="DescriptionList">
           <div class="info-item"><div class="k">代收接入</div><div class="v">${tag(item.collectConfig.status)}</div></div>
           <div class="info-item"><div class="k">代付接入</div><div class="v">${tag(item.payoutConfig.status)}</div></div>
           <div class="info-item"><div class="k">IP 白名单总状态</div><div class="v">${tag(item.ipStatus === "已确认" ? "已确认" : "IP 待确认", item.ipStatus === "已确认" ? "green" : "orange")}</div></div>
-          <div class="info-item"><div class="k">商户登录地址</div><div class="v mono">https://tenant.huisheng.example/merchant-login</div></div>
+          <div class="info-item"><div class="k">商户端共享登录地址</div><div class="v mono">https://${escapeHtml(merchantLoginAccess.loginDomain)}/login</div></div>
+          <div class="info-item"><div class="k">共享入口状态</div><div class="v">${tag(merchantLoginAccess.loginDomainStatus, merchantLoginAccess.loginDomainStatus === "可用" ? "green" : "orange")}</div></div>
         </div>
-        <div class="notice">商户后台由平台提供，直接读取业务数据，不依赖回调。只有商户自有系统接入 API 时，才需要以下配置。</div>
+        <div class="notice">商户端域名由平台与运维按租户统一配置，当前租户下全部商户共用；域名先识别租户，再由账号与密码识别具体商户。只有商户自有系统接入 API 时，才需要以下配置。</div>
         <div class="access-panels">
           <div class="sub-panel" data-astryx="DataPanel">
             <div class="sub-panel-headline">
@@ -24182,6 +24201,11 @@
                 <label for="createMerchantPhone">联系电话</label>
                 <input class="input" id="createMerchantPhone" value="+65 9000 1100" autocomplete="off">
               </div>
+              <div class="field wide">
+                <label for="createMerchantAccount">初始登录账号</label>
+                <input class="input mono" id="createMerchantAccount" value="admin@newmerchant" autocomplete="off">
+                <small>商户端域名为租户共享入口，因此登录账号必须在当前租户范围内唯一。</small>
+              </div>
               <div class="field wide" id="createParentField" hidden>
                 <label for="createMerchantParent">上级主商户</label>
                 <select class="select" id="createMerchantParent"><option value="">请选择上级主商户</option>${parentOptions}</select>
@@ -24253,6 +24277,7 @@
       const type = document.getElementById("createMerchantType").value;
       const owner = document.getElementById("createMerchantOwner").value.trim();
       const phone = document.getElementById("createMerchantPhone").value.trim();
+      const merchantAdminAccount = document.getElementById("createMerchantAccount").value.trim().toLowerCase();
       const parentMerchantId = document.getElementById("createMerchantParent").value;
       const unifiedCallback = document.getElementById("createUnifiedCallback").value.trim();
       const whitelist = document.getElementById("createMerchantWhitelist").value.trim();
@@ -24268,6 +24293,8 @@
       if (merchants.some((merchant) => merchant.name.toLowerCase() === name.toLowerCase())) return showInlineError("当前租户已存在同名商户。", "createMerchantName");
       if (!owner) return showInlineError("请填写联系人。", "createMerchantOwner");
       if (!phone) return showInlineError("请填写联系电话。", "createMerchantPhone");
+      if (!merchantAdminAccount) return showInlineError("请填写初始登录账号。", "createMerchantAccount");
+      if (merchants.some((merchant) => ensureAdminSecurity(merchant).account.toLowerCase() === merchantAdminAccount)) return showInlineError("该登录账号已被当前租户下其他商户使用，请更换账号。", "createMerchantAccount");
       if (type === "子商户" && !parentMerchantId) return showInlineError("子商户必须选择上级主商户。", "createMerchantParent");
       if (!capabilities.length) return showInlineError("至少选择一项当前租户已开通的业务能力。", "createCapCollect");
       if (unifiedCallback && !isPublicHttpsUrl(unifiedCallback)) return showInlineError("统一回调 URL 必须使用公网 HTTPS，不能使用本机或内网地址。", "createUnifiedCallback");
@@ -24319,7 +24346,7 @@
           ["CNY", "代收钱包", "0.00", "0.00", "0.00"],
           ["CNY", "代付钱包", "0.00", "0.00", "0.00"]
         ],
-        adminSecurity: { account: "admin", passwordStatus: "一次性密码待使用", twoFaStatus: "待绑定", sessions: "无在线会话", lastReset: created },
+        adminSecurity: { account: merchantAdminAccount, passwordStatus: "一次性密码待使用", twoFaStatus: "待绑定", sessions: "无在线会话", lastReset: created },
         logs: [[created, "创建商户", currentTenantOperator.account, "同时建立唯一系统超级管理员；其他角色由商户自行创建"]]
       };
       merchants.push(merchant);
@@ -24337,12 +24364,14 @@
           <div class="info-grid" data-astryx="DescriptionList">
             <div class="info-item"><div class="k">商户</div><div class="v">${escapeHtml(merchant.name)}</div></div>
             <div class="info-item"><div class="k">商户编号</div><div class="v mono">${merchant.id}</div></div>
+            <div class="info-item"><div class="k">商户端共享登录地址</div><div class="v mono">https://${escapeHtml(tenantMerchantLoginAccess.loginDomain)}/login</div></div>
+            <div class="info-item"><div class="k">共享入口状态</div><div class="v">${tag(tenantMerchantLoginAccess.loginDomainStatus, "green")}</div></div>
             <div class="info-item"><div class="k">初始角色</div><div class="v">系统超级管理员（全部权限）</div></div>
-            <div class="info-item"><div class="k">初始账号</div><div class="v mono">admin</div></div>
+            <div class="info-item"><div class="k">初始账号</div><div class="v mono">${escapeHtml(merchant.adminSecurity.account)}</div></div>
             <div class="info-item"><div class="k">一次性密码</div><div class="v mono" id="createdMerchantOtp">${escapeHtml(oneTimePassword)}</div></div>
             <div class="info-item"><div class="k">有效期</div><div class="v">24 小时；首次登录强制改密并绑定 Google 2FA</div></div>
           </div>
-          <div class="notice">一次性密码仅在本次结果中展示。系统不会发送短信或邮件，由创建人自行安全交付；关闭后不再明文显示。</div>
+          <div class="notice">一次性密码仅在本次结果中展示。创建商户不会生成独立域名；商户使用当前租户已有的共享商户端域名登录，系统再通过账号识别具体商户。</div>
         </div>
         <div class="modal-footer" data-astryx="FooterActions">
           <button class="btn" type="button" id="copyCreatedMerchant"><i data-lucide="copy"></i>复制交付信息</button>
@@ -24352,7 +24381,7 @@
       showModal("small");
       bindModalEvents();
       document.getElementById("copyCreatedMerchant").addEventListener("click", async () => {
-        const summary = `商户：${merchant.name}\n商户编号：${merchant.id}\n初始账号：admin\n一次性密码：${oneTimePassword}\n有效期：24 小时`;
+        const summary = `商户：${merchant.name}\n商户编号：${merchant.id}\n商户端共享登录地址：https://${tenantMerchantLoginAccess.loginDomain}/login\n共享入口状态：${tenantMerchantLoginAccess.loginDomainStatus}\n初始账号：${merchant.adminSecurity.account}\n一次性密码：${oneTimePassword}\n有效期：24 小时`;
         const copied = await copyText(summary);
         showToast(copied ? "交付信息已复制；请通过安全渠道发送" : "复制失败，请手动复制当前可见交付信息");
       });

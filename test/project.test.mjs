@@ -8,8 +8,22 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const modules = JSON.parse(await readFile(path.join(root, "src/legacy/modules.json"), "utf8"));
 
-test("页面数量与旧单体一致（22 个页面）", () => {
-  assert.equal(Object.keys(modules).length, 22);
+test("页面注册表包含 23 个页面", () => {
+  assert.equal(Object.keys(modules).length, 23);
+});
+
+test("资金划转导航、登录权限与系统权限口径一致", async () => {
+  const [loginHtml, systemHtml, overviewHtml] = await Promise.all([
+    readFile(path.join(root, "public/legacy/sources/login.html"), "utf8"),
+    readFile(path.join(root, "public/legacy/sources/system.html"), "utf8"),
+    readFile(path.join(root, "public/legacy/sources/overview.html"), "utf8")
+  ]);
+  assert.equal(modules.funds.label, "资金划转");
+  assert.match(loginHtml, /id: "funding", label: "资金划转"[^\n]+tenant\.wallet_transfer\.view/);
+  assert.match(systemHtml, /id:'funding',page:'资金划转'[^\n]+tenant\.wallet_transfer\.view/);
+  assert.doesNotMatch(systemHtml, /id:'funding',page:'资金申请'/);
+  assert.doesNotMatch(overviewHtml, /data-action="todo-source"[^>]+data-target="资金申请"/);
+  assert.doesNotMatch(overviewHtml, /type: "资金申请处理"[^\n]+target: "资金申请"/);
 });
 
 test("每个页面的源文件存在于 public/legacy/sources", async () => {

@@ -19353,6 +19353,44 @@
       padding: 32px;
     }
 
+    .domain-review-toolbar {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      z-index: 500;
+      width: min(1080px, calc(100% - 28px));
+      display: none;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 12px;
+      transform: translateX(-50%);
+      border: 1px solid rgba(148, 163, 184, .42);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .16);
+      backdrop-filter: blur(12px);
+    }
+
+    body.review-mode .domain-review-toolbar { display: grid; }
+    body.review-mode .page { padding-top: 96px; }
+    .domain-review-toolbar strong { font-size: 13px; white-space: nowrap; }
+    .domain-review-toolbar small { color: var(--color-text-secondary); font-size: 12px; white-space: nowrap; }
+    .domain-review-options { display: flex; justify-content: center; gap: 7px; overflow-x: auto; }
+    .domain-review-option {
+      min-height: 34px !important;
+      flex: 0 0 auto;
+      padding: 0 10px;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .domain-review-option:hover,
+    .domain-review-option.active { border-color: var(--color-primary); background: var(--color-primary-light); color: #1247a6; }
+
     .auth-shell {
       width: min(1120px, 100%);
       min-height: 680px;
@@ -19363,6 +19401,15 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-panel);
       overflow: hidden;
+    }
+
+    .auth-shell.domain-unavailable {
+      grid-template-columns: 1fr;
+      max-width: 680px;
+    }
+
+    .auth-shell.domain-unavailable .brand-pane {
+      display: none;
     }
 
     .brand-pane {
@@ -19958,6 +20005,11 @@
     }
 
     @media (max-width: 768px) {
+      .domain-review-toolbar { grid-template-columns: 1fr; gap: 8px; }
+      .domain-review-toolbar small { display: none; }
+      .domain-review-options { justify-content: flex-start; }
+      body.review-mode .page { padding-top: 138px; }
+
       button,
       input:not([type="checkbox"]):not([type="radio"]),
       select,
@@ -20169,6 +20221,17 @@
   </script>
 </head>
 <body>
+  <aside class="domain-review-toolbar" aria-label="租户域名场景评审工具">
+    <strong>域名登录场景</strong>
+    <div class="domain-review-options">
+      <button class="domain-review-option" type="button" data-review-domain="tenant.hs-pay.com">可用 · 系统域名</button>
+      <button class="domain-review-option" type="button" data-review-domain="portal.hs-sea-pay.com">可用 · 同租户域名</button>
+      <button class="domain-review-option" type="button" data-review-domain="new.hs-sea-pay.com">未启用</button>
+      <button class="domain-review-option" type="button" data-review-domain="ops.hs-sea-pay.com">已停用</button>
+      <button class="domain-review-option" type="button" data-review-domain="unknown.example">未登记 / 已解绑</button>
+    </div>
+    <small>账号 admin@tenant.example · 密码 Tenant#2026 · 2FA 246810</small>
+  </aside>
   <main class="page">
     <section class="auth-shell" id="authShell">
       <aside class="brand-pane" id="brandPane">
@@ -20177,7 +20240,7 @@
             <div class="logo" id="brandLogo">HS</div>
             <div>
               <p class="brand-name" id="brandName">汇盛支付租户后台</p>
-              <p class="brand-domain">tenant.huishengpay.local</p>
+              <p class="brand-domain" id="brandDomain">tenant.hs-pay.com</p>
             </div>
           </div>
 
@@ -20220,6 +20283,7 @@
       <section class="login-pane">
         <div class="demo-switch" aria-label="登录状态核对">
           <button class="active" data-state="default">默认登录</button>
+          <button data-state="domainUnavailable">域名不可用</button>
           <button data-state="verify">Google 2FA</button>
           <button data-state="tenantDisabled">租户停用</button>
           <button data-state="whitelist">白名单阻断</button>
@@ -20233,6 +20297,26 @@
             <p id="panelDesc">请输入当前租户后台账号和密码。安全策略由系统管理页统一维护。</p>
           </div>
           <span class="badge success" id="stateBadge"><i data-lucide="lock-keyhole"></i> 安全登录</span>
+        </div>
+
+        <div id="domainUnavailablePanel" class="hidden">
+          <div class="verify-grid">
+            <div class="alert danger">
+              <i data-lucide="globe-lock"></i>
+              <div>
+                <strong>访问地址不可用</strong>
+                <p>当前地址尚未登记、尚未启用或已停用，暂时无法进入登录流程。</p>
+              </div>
+            </div>
+            <dl class="detail-list">
+              <div><dt>当前结果</dt><dd>已在账号输入前阻断</dd></div>
+              <div><dt>信息保护</dt><dd>不展示租户名称、品牌或账号表单</dd></div>
+              <div><dt>处理建议</dt><dd>请确认访问地址，或联系平台运营</dd></div>
+            </dl>
+            <div class="actions">
+              <button class="primary-btn danger" type="button" id="contactForDomain"><i data-lucide="message-square-warning"></i>联系平台运营</button>
+            </div>
+          </div>
         </div>
 
         <div id="defaultPanel">
@@ -20407,11 +20491,34 @@
   <div class="toast" id="toast" role="status" aria-live="polite">已切换状态</div>
 
   <script>
-    const reviewMode = new URLSearchParams(window.location.search).get("review") === "1";
+    const loginParamSearch = window.frameElement?.ownerDocument?.defaultView?.location?.search || window.location.search;
+    const loginParams = new URLSearchParams(loginParamSearch);
+    const reviewMode = loginParams.get("review") === "1";
     document.body.classList.toggle("review-mode", reviewMode);
+    const requestedDomain = (loginParams.get("domain") || "tenant.hs-pay.com").trim().toLowerCase();
+    const tenantDomainCatalog = new Map([
+      ["tenant.hs-pay.com", { tenantId: "HS-TEN-001", status: "可用" }],
+      ["portal.hs-sea-pay.com", { tenantId: "HS-TEN-001", status: "可用" }],
+      ["new.hs-sea-pay.com", { tenantId: "HS-TEN-001", status: "未启用" }],
+      ["ops.hs-sea-pay.com", { tenantId: "HS-TEN-001", status: "已停用" }]
+    ]);
+    const resolvedDomain = tenantDomainCatalog.get(requestedDomain) || null;
+
+    document.querySelectorAll("[data-review-domain]").forEach(button => {
+      button.classList.toggle("active", button.dataset.reviewDomain === requestedDomain);
+      button.addEventListener("click", () => {
+        const hostWindow = window.frameElement?.ownerDocument?.defaultView || window;
+        const nextUrl = new URL(hostWindow.location.href);
+        nextUrl.searchParams.set("review", "1");
+        nextUrl.searchParams.set("domain", button.dataset.reviewDomain);
+        nextUrl.hash = "login";
+        hostWindow.location.assign(nextUrl.toString());
+      });
+    });
 
     const panels = {
       default: document.getElementById("defaultPanel"),
+      domainUnavailable: document.getElementById("domainUnavailablePanel"),
       verify: document.getElementById("verifyPanel"),
       tenantDisabled: document.getElementById("tenantDisabledPanel"),
       whitelist: document.getElementById("whitelistPanel"),
@@ -20420,6 +20527,19 @@
     };
 
     const stateCopy = {
+      domainUnavailable: {
+        title: "访问地址不可用",
+        desc: "系统未建立可用的租户登录上下文，账号输入前即停止访问。",
+        badge: "地址不可用",
+        badgeClass: "danger",
+        brandName: "安全登录",
+        brandTitle: "访问地址不可用",
+        brandCopy: "请确认访问地址，或联系平台运营处理。",
+        brandBadge: "未解析",
+        brandBadgeClass: "warning",
+        logo: "HP",
+        fallback: true
+      },
       default: {
         title: "登录租户端后台",
         desc: "请输入当前租户后台账号和密码。安全策略由系统管理页统一维护。",
@@ -20490,7 +20610,7 @@
         desc: "品牌缺省或资源不可用时，使用系统默认品牌继续登录。",
         badge: "默认品牌",
         badgeClass: "warning",
-        brandName: "汇盛支付默认入口",
+        brandName: "汇盛支付系统入口",
         brandTitle: "使用默认品牌回退",
         brandCopy: "登录能力不依赖未生效品牌配置，品牌维护仍归租户配置页。",
         brandBadge: "默认品牌",
@@ -20509,6 +20629,7 @@
     const brandCopy = document.getElementById("brandCopy");
     const brandBadge = document.getElementById("brandBadge");
     const brandLogo = document.getElementById("brandLogo");
+    const brandDomain = document.getElementById("brandDomain");
     const authShell = document.getElementById("authShell");
     const toast = document.getElementById("toast");
     const loginButton = document.getElementById("loginButton");
@@ -20537,7 +20658,7 @@
       { id: "payouts", label: "法币代付订单", type: "page", pagePermission: "tenant.payout.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#payout", visible: true, enabled: true },
       { id: "channels", label: "授权通道", type: "page", pagePermission: "tenant.channel_authorization.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#channels", visible: true, enabled: true },
       { id: "wallets", label: "平台钱包", type: "page", pagePermission: "tenant.platform_wallet.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#wallets", visible: true, enabled: true },
-      { id: "funding", label: "资金申请", type: "page", pagePermission: "tenant.fund_application.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#funds", visible: true, enabled: true },
+      { id: "funding", label: "资金划转", type: "page", pagePermission: "tenant.wallet_transfer.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#funds", visible: true, enabled: true },
       { id: "ledger", label: "账户流水", type: "page", pagePermission: "tenant.ledger.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#ledger", visible: true, enabled: true },
       { id: "reconciliation", label: "日终报表", type: "page", pagePermission: "tenant.reconciliation.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#reconciliation", visible: true, enabled: true },
       { id: "exports", label: "导出任务", type: "page", pagePermission: "tenant.export_task.view", href: "../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#exports", visible: true, enabled: true },
@@ -20636,6 +20757,8 @@
       brandCopy.textContent = copy.brandCopy;
       brandLogo.textContent = copy.logo;
       authShell.classList.toggle("fallback", copy.fallback);
+      authShell.classList.toggle("domain-unavailable", state === "domainUnavailable");
+      brandDomain.textContent = requestedDomain;
 
       setBadge(stateBadge, copy.badge, copy.badgeClass, copy.badgeClass === "danger" ? "circle-alert" : "lock-keyhole");
       setBadge(brandBadge, copy.brandBadge, copy.brandBadgeClass, copy.brandBadgeClass === "warning" ? "badge-alert" : "check-circle-2");
@@ -20749,6 +20872,11 @@
     });
 
     window.__HSTenantLoginPrototype = {
+      resolveDomain: domain => {
+        const normalized = String(domain || "").trim().toLowerCase();
+        const context = tenantDomainCatalog.get(normalized);
+        return context?.status === "可用" ? { domain: normalized, ...context } : null;
+      },
       resolveLoginRoute: account => ({ ...resolveTenantLoginRoute(account) }),
       getNavigationOrder: () => tenantLoginNavigation.map(route => ({ ...route })),
       getPermissionFact: account => {
@@ -20767,6 +20895,10 @@
 
     document.getElementById("contactForTenant").addEventListener("click", () => {
       showToast("请联系平台运营处理当前租户登录问题");
+    });
+
+    document.getElementById("contactForDomain").addEventListener("click", () => {
+      showToast("请联系平台运营确认该访问地址是否已完成配置并启用");
     });
 
     document.getElementById("contactForLock").addEventListener("click", () => {
@@ -20808,7 +20940,7 @@
       });
     });
 
-    setState("default");
+    setState(resolvedDomain?.status === "可用" ? "default" : "domainUnavailable");
     if (window.lucide) window.lucide.createIcons();
   </script>
   <script>

@@ -64,7 +64,7 @@
     "initialHash": "wallets"
   },
   "funds": {
-    "label": "资金申请",
+    "label": "资金划转",
     "group": "资金中心",
     "module": "overview",
     "sourceKey": "overview",
@@ -94,6 +94,14 @@
     "sourceKey": "overview",
     "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
     "initialHash": "reports"
+  },
+  "order-tracking": {
+    "label": "全局订单追踪",
+    "group": "运营中心",
+    "module": "overview",
+    "sourceKey": "overview",
+    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
+    "initialHash": "order-tracking"
   },
   "todos": {
     "label": "业务待办",

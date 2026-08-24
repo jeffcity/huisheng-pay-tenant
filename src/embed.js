@@ -5,7 +5,7 @@ const sourceCache = new Map();
 
 async function fetchSource(key) {
   if (sourceCache.has(key)) return sourceCache.get(key);
-  const res = await fetch(`./legacy/sources/${key}.html`);
+  const res = await fetch(`./legacy/sources/${key}.html`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`页面来源缺失：${key}`);
   const text = await res.text();
   sourceCache.set(key, text);
