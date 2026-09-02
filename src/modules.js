@@ -1,4 +1,4 @@
-// 页面注册表：23 个页面 → 4 个源文件 + hash 路由（从旧单体 const pages 原样迁出）。
+// 页面注册表：23 个页面 → 5 个源文件 + hash 路由。
 import modules from './legacy/modules.json' with { type: 'json' };
 
 export const MODULES = modules;

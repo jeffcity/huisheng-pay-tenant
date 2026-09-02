@@ -48,10 +48,24 @@ test("租户钱包与资金划转导航及业务对象口径一致", async () =>
 
 test("每个页面的源文件存在于 public/legacy/sources", async () => {
   const keys = new Set(Object.values(modules).map(m => m.sourceKey));
-  assert.equal(keys.size, 4);
+  assert.equal(keys.size, 5);
   for (const key of keys) {
     await stat(path.join(root, "public/legacy/sources", `${key}.html`));
   }
+});
+
+test("通知中心使用独立业务源并包含发送消息与通知配置两个页签", async () => {
+  assert.equal(modules.notifications.sourceKey, "notifications");
+  assert.equal(modules.notifications.group, "运营中心");
+  const html = await readFile(path.join(root, "public/legacy/sources/notifications.html"), "utf8");
+  assert.match(html, /role="tab"[^>]*>\s*(?:<[^>]+>[^<]*<\/[^>]+>\s*)*发送的消息/);
+  assert.match(html, /role="tab"[^>]*>\s*(?:<[^>]+>[^<]*<\/[^>]+>\s*)*通知配置/);
+  assert.match(html, /新增通知配置/);
+  assert.match(html, /同一消息类型可配置多个目标群/);
+  assert.match(html, /推送时间（UTC\+8）/);
+  assert.match(html, /推送事件/);
+  assert.match(html, /推送内容/);
+  assert.match(html, /推送当时命中的模板快照/);
 });
 
 test("每个页面都有 label/group/module/sourceKey/sourceName", () => {

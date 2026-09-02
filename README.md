@@ -5,7 +5,7 @@
 ## 结构
 
 - React 壳：`src/App.jsx`、`src/embed.js`、`src/modules.js`、`src/shell.css`、`src/main.jsx`
-- 内页业务源（唯一界面事实源，禁止 base64 化）：`public/legacy/sources/{overview,merchants,system,login}.html`
+- 内页业务源（唯一界面事实源，禁止 base64 化）：`public/legacy/sources/{overview,merchants,notifications,system,login}.html`
 - 页面注册表（22 页）：`src/legacy/modules.json`
 - 本地开发：`npm run dev`；评审入口：`npm run build` 后打开 `dist/index.html`
 - GitHub Pages 产物：`dist/`

@@ -122,10 +122,10 @@
   "notifications": {
     "label": "通知中心",
     "group": "运营中心",
-    "module": "overview",
-    "sourceKey": "overview",
-    "sourceName": "00-总览 / 业务运营 / 资金中心 / 运营中心",
-    "initialHash": "notifications"
+    "module": "notifications",
+    "sourceKey": "notifications",
+    "sourceName": "04-运营中心 / 04-通知中心",
+    "initialHash": ""
   },
   "settings": {
     "label": "租户配置",

@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>汇盛支付租户端 - 通知中心</title>
+  <style>
+    :root {
+      --primary: #165dff;
+      --primary-hover: #0e42d2;
+      --primary-soft: #e8f3ff;
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #1d2129;
+      --text-2: #4e5969;
+      --text-3: #86909c;
+      --border: #e5e6eb;
+      --border-strong: #c9cdd4;
+      --success: #00b42a;
+      --success-soft: #e8ffea;
+      --warning: #ff7d00;
+      --warning-soft: #fff7e8;
+      --danger: #f53f3f;
+      --danger-soft: #ffece8;
+      --shadow: 0 1px 2px rgba(29, 33, 41, .04), 0 6px 18px rgba(29, 33, 41, .04);
+      --radius: 8px;
+      --radius-sm: 4px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(22, 93, 255, .22);
+      outline-offset: 2px;
+    }
+    [hidden] { display: none !important; }
+    .page { min-width: 0; padding: 20px 22px 36px; }
+    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+    .page-head h1 { margin: 0; font-size: 22px; line-height: 1.35; font-weight: 650; }
+    .page-head p { margin: 7px 0 0; color: var(--text-2); }
+    .tenant-scope { display: flex; align-items: center; gap: 9px; min-height: 36px; padding: 7px 12px; border: 1px solid #bedaff; border-radius: 18px; background: var(--primary-soft); color: #0e42d2; white-space: nowrap; }
+    .scope-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 3px rgba(22,93,255,.12); }
+    .tabs { display: flex; align-items: flex-end; gap: 28px; height: 47px; margin-bottom: 16px; padding: 0 18px; border-bottom: 1px solid var(--border); background: var(--surface); border-radius: var(--radius) var(--radius) 0 0; }
+    .tab { position: relative; height: 47px; padding: 0 2px; border: 0; background: transparent; color: var(--text-2); font-weight: 500; transition: color .2s ease; }
+    .tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--primary); transform: scaleX(0); transition: transform .2s ease; }
+    .tab:hover { color: var(--primary); }
+    .tab.active { color: var(--primary); font-weight: 650; }
+    .tab.active::after { transform: scaleX(1); }
+    .count-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; margin-left: 6px; padding: 0 6px; border-radius: 10px; background: #f2f3f5; color: var(--text-2); font-size: 12px; font-weight: 600; }
+    .tab.active .count-pill { background: var(--primary-soft); color: var(--primary); }
+    .panel { min-width: 0; }
+    .metrics { display: grid; grid-template-columns: repeat(5, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .metric { min-height: 92px; padding: 15px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .metric-label { color: var(--text-2); font-size: 13px; }
+    .metric-value { margin-top: 6px; font-size: 24px; line-height: 1.1; font-weight: 650; font-variant-numeric: tabular-nums; }
+    .metric-hint { margin-top: 7px; color: var(--text-3); font-size: 12px; }
+    .card { min-width: 0; margin-bottom: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .filter-card { display: grid; grid-template-columns: 1.2fr .75fr .75fr .8fr auto; gap: 14px; align-items: end; padding: 16px; }
+    .config-filter { grid-template-columns: 1fr .7fr .75fr 1fr 1fr auto; }
+    .push-filter { grid-template-columns: 1fr 1fr .8fr auto; }
+    .field { min-width: 0; }
+    .field label { display: block; margin-bottom: 6px; color: var(--text-2); font-size: 13px; font-weight: 550; }
+    .control { width: 100%; height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); transition: border-color .2s ease, box-shadow .2s ease; }
+    textarea.control { min-height: 142px; padding: 9px 10px; line-height: 1.6; resize: vertical; }
+    .control:hover { border-color: #94bfff; }
+    .control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,93,255,.1); outline: 0; }
+    .control.invalid { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(245,63,63,.08); }
+    .field-error { display: none; margin-top: 5px; color: var(--danger); font-size: 12px; }
+    .field-error.show { display: block; }
+    .filter-actions, .page-actions, .row-actions, .modal-actions, .special-actions { display: flex; align-items: center; gap: 8px; }
+    .btn { min-height: 34px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text-2); transition: border-color .2s ease, color .2s ease, background-color .2s ease; }
+    .btn:hover { border-color: #94bfff; color: var(--primary); background: #f7fbff; }
+    .btn.primary { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .btn.primary:hover { border-color: var(--primary-hover); background: var(--primary-hover); color: #fff; }
+    .btn.danger { border-color: #ffb5b5; color: var(--danger); }
+    .btn.danger:hover { border-color: var(--danger); background: var(--danger-soft); }
+    .btn:disabled { cursor: not-allowed; opacity: .48; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 66px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .card-head h2 { margin: 0; font-size: 16px; font-weight: 650; }
+    .card-head p { margin: 3px 0 0; color: var(--text-3); font-size: 12px; }
+    .card-meta { color: var(--text-2); white-space: nowrap; }
+    .scope-note { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid #bedaff; border-radius: var(--radius); background: #f5faff; color: #0e42d2; }
+    .scope-note strong { display: block; margin-bottom: 2px; }
+    .table-wrap { width: 100%; overflow: auto; }
+    table { width: 100%; min-width: 1450px; border-collapse: collapse; }
+    .message-table { min-width: 1580px; }
+    .push-table { min-width: 880px; }
+    th, td { min-height: 48px; padding: 10px 13px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; white-space: nowrap; }
+    th { height: 42px; background: #f7f8fa; color: var(--text-2); font-size: 13px; font-weight: 600; }
+    tbody tr:hover { background: #f7fbff; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 12px; }
+    .stack { display: grid; gap: 2px; }
+    .muted { color: var(--text-3); font-size: 12px; }
+    .tag { display: inline-flex; align-items: center; min-height: 23px; padding: 2px 9px; border-radius: 12px; font-size: 12px; line-height: 1.2; }
+    .tag.blue { color: #0e42d2; background: var(--primary-soft); }
+    .tag.green { color: #008a1c; background: var(--success-soft); }
+    .tag.orange { color: #c35a00; background: var(--warning-soft); }
+    .tag.red { color: #cb2634; background: var(--danger-soft); }
+    .tag.gray { color: var(--text-2); background: #f2f3f5; }
+    .tag.special { margin-left: 5px; border-radius: var(--radius-sm); color: #c35a00; background: var(--warning-soft); }
+    .link-btn { min-height: 30px; padding: 2px 5px; border: 0; background: transparent; color: var(--primary); }
+    .link-btn:hover { color: var(--primary-hover); text-decoration: underline; }
+    .link-btn.danger { color: var(--danger); }
+    .switch { position: relative; width: 44px; height: 24px; padding: 0; border: 0; border-radius: 12px; background: #c9cdd4; transition: background-color .2s ease; }
+    .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s ease; }
+    .switch.on { background: var(--primary); }
+    .switch.on::after { transform: translateX(20px); }
+    .switch-label { margin-left: 7px; color: var(--text-2); font-size: 12px; }
+    .template-summary { display: block; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
+    .push-content { min-width: 520px; max-width: 720px; color: var(--text-2); line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+    .empty { height: 150px; text-align: center; color: var(--text-3); }
+    .pager { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: 56px; padding: 10px 16px; border-top: 1px solid var(--border); color: var(--text-2); }
+    .page-btn { min-width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text-2); }
+    .page-btn.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .special-card { padding: 0; overflow: hidden; }
+    .special-body { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; padding: 16px; }
+    .special-actions { justify-content: flex-end; padding: 0 16px 16px; }
+    .mask { position: fixed; inset: 0; z-index: 80; display: none; align-items: flex-start; justify-content: center; padding: 56px 20px 24px; overflow: auto; background: rgba(29, 33, 41, .48); }
+    .mask.show { display: flex; }
+    .modal { width: min(780px, 100%); border-radius: var(--radius); background: var(--surface); box-shadow: 0 20px 60px rgba(29,33,41,.22); }
+    .modal.small { width: min(460px, 100%); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 18px; border-bottom: 1px solid var(--border); }
+    .modal-head h3 { margin: 0; font-size: 18px; font-weight: 650; }
+    .close { width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: var(--text-3); font-size: 23px; }
+    .close:hover { background: #f2f3f5; color: var(--text); }
+    .modal-body { padding: 18px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .modal-grid .full { grid-column: 1 / -1; }
+    .readonly { min-height: 34px; display: flex; align-items: center; gap: 8px; }
+    .variables { display: flex; flex-wrap: wrap; gap: 7px; min-height: 50px; padding: 9px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-soft); }
+    .chip { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border: 1px solid #bedaff; border-radius: 14px; background: var(--primary-soft); color: #0e42d2; font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px; }
+    .preview { min-height: 118px; padding: 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-soft); color: var(--text-2); white-space: pre-wrap; }
+    .hint { margin-top: 5px; color: var(--text-3); font-size: 12px; }
+    .modal-actions { justify-content: flex-end; padding: 14px 18px; border-top: 1px solid var(--border); }
+    .detail-list { display: grid; grid-template-columns: 140px minmax(0, 1fr); margin: 0; }
+    .detail-list dt, .detail-list dd { margin: 0; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .detail-list dt { color: var(--text-3); }
+    .detail-list dd { color: var(--text); word-break: break-all; }
+    .confirm-copy { margin: 0 0 14px; color: var(--text-2); line-height: 1.7; }
+    .toast { position: fixed; right: 24px; bottom: 24px; z-index: 120; max-width: 390px; padding: 11px 15px; border-radius: var(--radius-sm); background: #1d2129; color: #fff; box-shadow: 0 10px 30px rgba(29,33,41,.2); opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    @media (max-width: 1180px) {
+      .metrics { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
+      .filter-card, .config-filter { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+      .filter-actions { justify-content: flex-end; }
+    }
+    @media (max-width: 720px) {
+      html, body { font-size: 16px; }
+      .page { padding: 14px 12px 28px; }
+      .page-head { flex-direction: column; }
+      .tenant-scope { white-space: normal; }
+      .tabs { gap: 20px; overflow-x: auto; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .filter-card, .config-filter, .modal-grid, .special-body { grid-template-columns: 1fr; }
+      .modal-grid .full { grid-column: auto; }
+      .filter-actions, .page-actions { flex-wrap: wrap; justify-content: flex-start; }
+      .card-head { align-items: flex-start; flex-direction: column; }
+      .detail-list { grid-template-columns: 1fr; }
+      .detail-list dt { padding-bottom: 2px; border-bottom: 0; }
+      .detail-list dd { padding-top: 2px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <div>
+        <h1>通知中心</h1>
+        <p>查看当前租户已推送至 TG 机器人的历史消息，并维护 TG 通知目标与消息模板。</p>
+      </div>
+      <div class="tenant-scope"><span class="scope-dot"></span><span>当前租户：HS-TEN-001 汇盛东南亚</span></div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="通知中心页签">
+      <button class="tab active" id="messagesTab" role="tab" type="button" aria-selected="true" aria-controls="messagesPanel" data-tab="messages">发送的消息 <span class="count-pill" id="messageTabCount">8</span></button>
+      <button class="tab" id="configTab" role="tab" type="button" aria-selected="false" aria-controls="configPanel" data-tab="config">通知配置 <span class="count-pill" id="configTabCount">9</span></button>
+    </nav>
+
+    <section class="panel" id="messagesPanel" role="tabpanel" aria-labelledby="messagesTab">
+      <section class="card filter-card push-filter" aria-label="TG 推送记录筛选">
+        <div class="field"><label for="messageEvent">推送事件</label><select class="control" id="messageEvent"><option value="">全部事件</option><option>商户钱包地址变更</option><option>商户资金申请</option><option>商户资金划转</option><option>代付订单驳回</option><option>恶意拉单预警</option><option>同一IP登录失败过多</option><option>账号与角色权限变更</option><option>通知配置变更</option></select></div>
+        <div class="field"><label for="messageGroup">TG 群 ID</label><input class="control" id="messageGroup" placeholder="请输入 TG 群 ID"></div>
+        <div class="field"><label for="messageDate">推送日期（UTC+8）</label><input class="control" id="messageDate" type="date"></div>
+        <div class="filter-actions"><button class="btn" id="resetMessages" type="button">重置</button><button class="btn primary" id="searchMessages" type="button">搜索</button></div>
+      </section>
+      <section class="card">
+        <header class="card-head">
+          <div><h2>TG 推送记录</h2><p>展示已推送至当前租户 TG 机器人的历史消息；内容按推送当时命中的模板快照渲染。</p></div>
+          <div class="page-actions"><span class="card-meta" id="messageCount">共 8 条</span><button class="btn" id="refreshMessages" type="button">刷新</button><button class="btn" id="exportMessages" type="button">导出</button></div>
+        </header>
+        <div class="table-wrap">
+          <table class="push-table">
+            <thead><tr><th>推送时间（UTC+8）</th><th>推送事件</th><th>推送内容</th></tr></thead>
+            <tbody id="messageRows"></tbody>
+          </table>
+        </div>
+        <footer class="pager"><span id="messagePagerText">共 8 条</span><button class="page-btn active" type="button">1</button></footer>
+      </section>
+    </section>
+
+    <section class="panel" id="configPanel" role="tabpanel" aria-labelledby="configTab" hidden>
+      <div class="scope-note">
+        <span class="scope-dot"></span>
+        <div><strong>当前租户配置范围</strong>通知机器人由平台授权，租户只维护接收群、启停状态与消息模板；同一消息类型可配置多个目标群。</div>
+      </div>
+      <section class="card filter-card config-filter" aria-label="通知配置筛选">
+        <div class="field"><label for="configType">消息类型</label><select class="control" id="configType"><option value="">全部类型</option></select></div>
+        <div class="field"><label for="configStatus">状态</label><select class="control" id="configStatus"><option value="">全部状态</option><option value="on">启用</option><option value="off">停用</option></select></div>
+        <div class="field"><label for="configRisk">风险等级</label><select class="control" id="configRisk"><option value="">全部风险</option><option>高风险</option><option>中风险</option><option>低风险</option></select></div>
+        <div class="field"><label for="configRobot">通知机器人</label><select class="control" id="configRobot"><option value="">全部机器人</option><option>汇盛通知 A</option><option>汇盛资金审核</option><option>汇盛风控</option><option>测试机器人</option></select></div>
+        <div class="field"><label for="configGroup">TG 群 ID</label><input class="control" id="configGroup" placeholder="请输入 TG 群 ID"></div>
+        <div class="filter-actions"><button class="btn" id="resetConfigs" type="button">重置</button><button class="btn primary" id="searchConfigs" type="button">搜索</button></div>
+      </section>
+      <section class="card">
+        <header class="card-head">
+          <div><h2>通知配置</h2><p>同一消息类型可配置多个目标群。</p></div>
+          <div class="page-actions"><span class="card-meta" id="configCount">共 9 条</span><button class="btn" id="refreshConfigs" type="button">刷新</button><button class="btn" id="exportConfigs" type="button">导出</button><button class="btn primary" id="addConfig" type="button">新增通知配置</button></div>
+        </header>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>序号</th><th>消息类型</th><th>风险等级</th><th>TG 群 ID</th><th>通知机器人</th><th>状态</th><th>消息模板摘要</th><th>更新时间</th><th>操作</th></tr></thead>
+            <tbody id="configRows"></tbody>
+          </table>
+        </div>
+        <footer class="pager"><span id="configPagerText">共 9 条</span><button class="page-btn active" type="button">1</button></footer>
+      </section>
+      <section class="card special-card" id="specialCard" hidden>
+        <header class="card-head"><div><h2>恶意拉单预警 · 专属配置</h2><p>仅调整当前租户的检测阈值，不改变平台全局风控规则。</p></div><button class="link-btn" id="collapseSpecial" type="button">收起</button></header>
+        <div class="special-body">
+          <div class="field"><label for="windowSeconds">统计窗口（秒）</label><input class="control" id="windowSeconds" type="number" min="1" value="180"></div>
+          <div class="field"><label for="pullThreshold">拉单次数阈值</label><input class="control" id="pullThreshold" type="number" min="1" value="6"></div>
+          <div class="field"><label for="ipThreshold">IP 数量阈值</label><input class="control" id="ipThreshold" type="number" min="1" value="2"></div>
+        </div>
+        <div class="special-actions"><button class="btn" id="cancelSpecial" type="button">取消</button><button class="btn primary" id="saveSpecial" type="button">保存专属配置</button></div>
+      </section>
+    </section>
+  </main>
+
+  <div class="mask" id="configMask" role="dialog" aria-modal="true" aria-labelledby="configModalTitle">
+    <div class="modal">
+      <header class="modal-head"><h3 id="configModalTitle">新增通知配置</h3><button class="close" id="closeConfigModal" type="button" aria-label="关闭通知配置弹窗">×</button></header>
+      <div class="modal-body">
+        <div class="modal-grid">
+          <div class="field"><label for="modalType">消息类型</label><select class="control" id="modalType"><option value="">请选择消息类型</option></select><span class="field-error" id="modalTypeError">请选择消息类型</span></div>
+          <div class="field"><label for="modalGroup">TG 群 ID</label><input class="control mono" id="modalGroup" placeholder="请输入当前租户 TG 群 ID"><span class="field-error" id="modalGroupError">请输入 TG 群 ID</span></div>
+          <div class="field"><label for="modalRobot">通知机器人</label><select class="control" id="modalRobot"><option value="">请选择通知机器人</option><option>汇盛通知 A</option><option>汇盛资金审核</option><option>汇盛风控</option><option>测试机器人</option></select><span class="field-error" id="modalRobotError">请选择通知机器人</span></div>
+          <div class="field"><label>风险等级</label><div class="readonly" id="modalRisk"><span class="tag gray">请选择消息类型</span><span class="muted">系统自动判定</span></div></div>
+          <div class="field full"><label>可用变量</label><div class="variables" id="modalVariables"><span class="muted">请选择消息类型</span></div></div>
+          <div class="field full"><label for="modalTemplate">消息模板</label><textarea class="control" id="modalTemplate" placeholder="支持 ${变量名} 占位符"></textarea><span class="hint">只能使用当前消息类型提供的变量。</span><span class="field-error" id="modalTemplateError">请输入消息模板</span></div>
+          <div class="field full"><label>模板预览</label><div class="preview" id="modalPreview">请选择消息类型</div></div>
+        </div>
+      </div>
+      <footer class="modal-actions"><button class="btn" id="cancelConfigModal" type="button">取消</button><button class="btn primary" id="submitConfigModal" type="button">保存配置</button></footer>
+    </div>
+  </div>
+
+  <div class="mask" id="confirmMask" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal small">
+      <header class="modal-head"><h3 id="confirmTitle">确认操作</h3><button class="close" id="closeConfirm" type="button" aria-label="关闭确认弹窗">×</button></header>
+      <div class="modal-body">
+        <p class="confirm-copy" id="confirmCopy"></p>
+        <div class="field" id="confirmReasonField" hidden><label for="confirmReason">操作原因</label><textarea class="control" id="confirmReason" rows="3" placeholder="请输入至少 4 个字"></textarea><span class="field-error" id="confirmReasonError">操作原因至少填写 4 个字</span></div>
+      </div>
+      <footer class="modal-actions"><button class="btn" id="cancelConfirm" type="button">取消</button><button class="btn primary" id="submitConfirm" type="button">确认</button></footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // TG 消息历史按推送当时的模板快照保存；后续修改配置不会回写已发送内容。
+    const messageData = [
+      { type: "商户资金划转", group: "-5211818661", time: "2026-09-02 10:30:00", date: "2026-09-02", template: "【商户资金划转】\n划转单号：${transferOrderNo}\n从：${sourceMerchantName}\n到：${targetMerchantName}\n划转金额：${transferAmount} ${currency}\n手续费：${feeAmount} ${currency}\n状态：${orderStatus}", values: { transferOrderNo: "TRF202609020006", sourceMerchantName: "星河游戏", targetMerchantName: "东盛电商", transferAmount: "18,000.00", feeAmount: "20.00", currency: "CNY", orderStatus: "已完成" } },
+      { type: "商户钱包地址变更", group: "-5211818661", time: "2026-09-02 10:18:35", date: "2026-09-02", template: "【商户钱包地址变更】\n商户：${merchantName}（${merchantNo}）\n原地址：${oldWalletAddress}\n新地址：${newWalletAddress}\n操作人：${operator}", values: { merchantName: "星河游戏", merchantNo: "MCH-2031", oldWalletAddress: "TQx7…91mA", newWalletAddress: "TNp4…28kQ", operator: "tenant.admin" } },
+      { type: "代付订单驳回", group: "-5211818661", time: "2026-09-01 18:03:09", date: "2026-09-01", template: "【代付订单驳回】\n商户：${merchantName}\n平台订单号：${platformOrderNo}\n商户订单号：${merchantOrderNo}\n金额：${payoutAmount}\n驳回原因：${rejectReason}", values: { merchantName: "星河游戏", platformOrderNo: "HS-P-260902-001218", merchantOrderNo: "PO-M-0902-1218", payoutAmount: "CNY 5,000.00", rejectReason: "收款信息校验失败" } },
+      { type: "恶意拉单预警", group: "-5211818661", time: "2026-09-01 17:24:27", date: "2026-09-01", template: "【恶意拉单预警】\n商户：${merchantName}\n请求次数：${requestCount}\n当前回传金额：${currentReturnedAmount}\n近期 IP 数：${recentIps}", values: { merchantName: "星河游戏", requestCount: "6", currentReturnedAmount: "CNY 1,001.00", recentIps: "2" } },
+      { type: "同一IP登录失败过多", group: "-5151564225", time: "2026-09-01 16:42:18", date: "2026-09-01", template: "【同一 IP 登录失败告警】\n账号：${username}\n来源 IP：${userIp}\n失败次数：${failedCount}", values: { username: "tenant.ops", userIp: "203.0.113.18", failedCount: "5" } },
+      { type: "账号与角色权限变更", group: "-5211818661", time: "2026-08-31 23:27:41", date: "2026-08-31", template: "【账号与角色权限变更】\n账号：${targetAccount}\n角色：${roleName}\n变更：${changeSummary}\n操作人：${operator}", values: { targetAccount: "tenant.finance", roleName: "财务管理员", changeSummary: "新增账户流水导出权限", operator: "tenant.admin" } },
+      { type: "商户资金申请", group: "-5211818661", time: "2026-08-31 11:27:30", date: "2026-08-31", template: "【商户资金申请】\n申请单号：${applicationNo}\n商户：${merchantName}\n金额：${amount} ${currency}\n状态：${status}", values: { applicationNo: "TFA202609020018", merchantName: "星河游戏", amount: "120,000.00", currency: "CNY", status: "待平台确认" } },
+      { type: "通知配置变更", group: "-5211818661", time: "2026-08-29 09:36:22", date: "2026-08-29", template: "【通知配置变更】\n消息类型：${configType}\n操作人：${operator}\n发生时间：${occurredAt}", values: { configType: "商户资金划转", operator: "tenant.admin", occurredAt: "2026-08-29 09:36:22" } }
+    ];
+
+    const typeMeta = {
+      "商户钱包地址变更": { risk: "高风险", vars: ["merchantName", "merchantNo", "oldWalletAddress", "newWalletAddress", "operator", "occurredAt"], template: "【商户钱包地址变更】\n商户：${merchantName}（${merchantNo}）\n原地址：${oldWalletAddress}\n新地址：${newWalletAddress}\n操作人：${operator}" },
+      "商户资金申请": { risk: "中风险", vars: ["applicationNo", "merchantName", "amount", "currency", "status", "occurredAt"], template: "【商户资金申请】\n申请单号：${applicationNo}\n商户：${merchantName}\n金额：${amount} ${currency}\n状态：${status}" },
+      "商户资金划转": { risk: "高风险", vars: ["transferOrderNo", "sourceMerchantName", "targetMerchantName", "transferAmount", "feeAmount", "currency", "orderStatus", "operator"], template: "【商户资金划转】\n划转单号：${transferOrderNo}\n从：${sourceMerchantName}\n到：${targetMerchantName}\n划转金额：${transferAmount} ${currency}\n手续费：${feeAmount} ${currency}\n状态：${orderStatus}" },
+      "代付订单驳回": { risk: "中风险", vars: ["merchantName", "platformOrderNo", "merchantOrderNo", "payoutAmount", "rejectReason", "rejectedAt"], template: "【代付订单驳回】\n商户：${merchantName}\n平台订单号：${platformOrderNo}\n商户订单号：${merchantOrderNo}\n金额：${payoutAmount}\n驳回原因：${rejectReason}" },
+      "恶意拉单预警": { risk: "高风险", vars: ["merchantName", "requestCount", "currentReturnedAmount", "recentIps", "occurredAt"], template: "【恶意拉单预警】\n商户：${merchantName}\n请求次数：${requestCount}\n当前回传金额：${currentReturnedAmount}\n近期 IP 数：${recentIps}" },
+      "租户账号登录失败过多": { risk: "高风险", vars: ["username", "userIp", "failedCount", "riskLevel", "occurredAt"], template: "【租户账号登录失败告警】\n账号：${username}\n来源 IP：${userIp}\n失败次数：${failedCount}\n风险：${riskLevel}" },
+      "同一IP登录失败过多": { risk: "高风险", vars: ["username", "userIp", "failedCount", "occurredAt"], template: "【同一 IP 登录失败告警】\n账号：${username}\n来源 IP：${userIp}\n失败次数：${failedCount}" },
+      "账号与角色权限变更": { risk: "高风险", vars: ["targetAccount", "roleName", "changeSummary", "operator", "ip", "occurredAt"], template: "【账号与角色权限变更】\n账号：${targetAccount}\n角色：${roleName}\n变更：${changeSummary}\n操作人：${operator}" },
+      "通知配置变更": { risk: "中风险", vars: ["configType", "operator", "occurredAt"], template: "【通知配置变更】\n消息类型：${configType}\n操作人：${operator}\n发生时间：${occurredAt}" }
+    };
+
+    const sample = {
+      merchantName: "星河游戏", merchantNo: "MCH-2031", oldWalletAddress: "TQx7…91mA", newWalletAddress: "TNp4…28kQ",
+      operator: "tenant.admin", occurredAt: "2026-09-02 10:30:00", applicationNo: "TFA202609020018", amount: "120,000.00",
+      currency: "CNY", status: "待平台确认", transferOrderNo: "TRF202609020006", sourceMerchantName: "星河游戏",
+      targetMerchantName: "东盛电商", transferAmount: "18,000.00", feeAmount: "20.00", orderStatus: "已完成",
+      platformOrderNo: "HS-P-260902-001218", merchantOrderNo: "PO-M-0902-1218", payoutAmount: "CNY 5,000.00",
+      rejectReason: "收款信息校验失败", rejectedAt: "2026-09-02 10:22:10", requestCount: "6",
+      currentReturnedAmount: "CNY 1,001.00", recentIps: "2", username: "tenant.ops", userIp: "203.0.113.18",
+      failedCount: "5", riskLevel: "高", targetAccount: "tenant.finance", roleName: "财务管理员",
+      changeSummary: "新增账户流水导出权限", ip: "203.0.113.21", configType: "商户资金划转"
+    };
+
+    let configData = [
+      { type: "商户资金划转", group: "-5211818661", robot: "汇盛资金审核", on: true, time: "2026-09-02 09:58:12" },
+      { type: "同一IP登录失败过多", group: "-5151564225", robot: "汇盛风控", on: true, time: "2026-09-01 21:44:51" },
+      { type: "代付订单驳回", group: "-5211818661", robot: "汇盛通知 A", on: true, time: "2026-09-01 18:03:09" },
+      { type: "恶意拉单预警", group: "-5211818661", robot: "汇盛风控", on: true, time: "2026-09-01 17:24:27", special: true },
+      { type: "账号与角色权限变更", group: "-5211818661", robot: "汇盛风控", on: false, time: "2026-08-31 23:27:41" },
+      { type: "商户资金申请", group: "-5211818661", robot: "汇盛资金审核", on: true, time: "2026-08-31 11:27:30" },
+      { type: "租户账号登录失败过多", group: "-5300000037", robot: "测试机器人", on: true, time: "2026-08-30 12:24:05" },
+      { type: "通知配置变更", group: "-5211818661", robot: "汇盛通知 A", on: false, time: "2026-08-29 09:36:22" },
+      { type: "商户钱包地址变更", group: "-5211818661", robot: "汇盛风控", on: true, time: "2026-08-28 16:35:50" }
+    ];
+    configData.forEach(function (item) { item.template = item.template || typeMeta[item.type].template; });
+
+    let filteredMessages = messageData.slice();
+    let filteredConfigs = configData.slice();
+    let editingConfigIndex = null;
+    let pendingConfirm = null;
+    let confirmNeedsReason = false;
+    let toastTimer = null;
+
+    const byId = function (id) { return document.getElementById(id); };
+    const escapeHtml = function (value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+      });
+    };
+    const riskTone = { "高风险": "red", "中风险": "orange", "低风险": "green" };
+
+    function toast(message) {
+      byId("toast").textContent = message;
+      byId("toast").classList.add("show");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(function () { byId("toast").classList.remove("show"); }, 2200);
+    }
+
+    function setActiveTab(name) {
+      const messages = name === "messages";
+      byId("messagesTab").classList.toggle("active", messages);
+      byId("configTab").classList.toggle("active", !messages);
+      byId("messagesTab").setAttribute("aria-selected", String(messages));
+      byId("configTab").setAttribute("aria-selected", String(!messages));
+      byId("messagesPanel").hidden = !messages;
+      byId("configPanel").hidden = messages;
+    }
+
+    function renderPushedContent(item) {
+      return item.template.replace(/\$\{(\w+)\}/g, function (_, variable) { return item.values[variable] || "${" + variable + "}"; });
+    }
+
+    function renderMessages() {
+      byId("messageRows").innerHTML = filteredMessages.length ? filteredMessages.map(function (item) {
+        return '<tr><td class="mono">' + escapeHtml(item.time) + '</td><td><span class="tag blue">' + escapeHtml(item.type) + '</span></td><td><div class="push-content">' + escapeHtml(renderPushedContent(item)) + '</div></td></tr>';
+      }).join("") : '<tr><td class="empty" colspan="3">暂无符合条件的 TG 推送记录</td></tr>';
+      byId("messageCount").textContent = "共 " + filteredMessages.length + " 条";
+      byId("messagePagerText").textContent = "共 " + filteredMessages.length + " 条";
+      byId("messageTabCount").textContent = messageData.length;
+    }
+
+    function searchMessages() {
+      const event = byId("messageEvent").value;
+      const group = byId("messageGroup").value.trim();
+      const date = byId("messageDate").value;
+      filteredMessages = messageData.filter(function (item) {
+        return (!event || item.type === event) && (!group || item.group.includes(group)) && (!date || item.date === date);
+      });
+      renderMessages();
+      toast("已找到 " + filteredMessages.length + " 条 TG 推送记录");
+    }
+
+    function resetMessages() {
+      ["messageEvent", "messageGroup", "messageDate"].forEach(function (id) { byId(id).value = ""; });
+      filteredMessages = messageData.slice();
+      renderMessages();
+      toast("TG 推送记录筛选条件已重置");
+    }
+
+    function renderConfigs() {
+      byId("configRows").innerHTML = filteredConfigs.length ? filteredConfigs.map(function (item, visibleIndex) {
+        const index = configData.indexOf(item);
+        const meta = typeMeta[item.type];
+        const summary = item.template.replace(/\n/g, " / ");
+        return '<tr><td>' + (visibleIndex + 1) + '</td><td><span class="tag blue">' + escapeHtml(item.type) + '</span>' + (item.special ? '<span class="tag special">特殊类型</span>' : '') + '</td>' +
+          '<td><span class="tag ' + riskTone[meta.risk] + '">' + meta.risk + '</span></td><td class="mono">' + escapeHtml(item.group) + '</td>' +
+          '<td><div class="stack"><span>' + escapeHtml(item.robot) + '</span><span class="muted">平台授权机器人池</span></div></td>' +
+          '<td><button class="switch ' + (item.on ? 'on' : '') + '" type="button" role="switch" aria-checked="' + item.on + '" aria-label="' + (item.on ? '停用' : '启用') + ' ' + escapeHtml(item.type) + '" data-config-toggle="' + index + '"></button><span class="switch-label">' + (item.on ? '启用' : '停用') + '</span></td>' +
+          '<td><span class="template-summary" title="' + escapeHtml(summary) + '">' + escapeHtml(summary) + '</span></td><td>' + item.time + '</td>' +
+          '<td><div class="row-actions"><button class="link-btn" type="button" data-config-edit="' + index + '">修改</button>' + (item.special ? '<button class="link-btn" type="button" data-config-special="' + index + '">专属配置</button>' : '') + '<button class="link-btn danger" type="button" data-config-delete="' + index + '">删除</button></div></td></tr>';
+      }).join("") : '<tr><td class="empty" colspan="9">暂无符合条件的通知配置</td></tr>';
+      byId("configCount").textContent = "共 " + filteredConfigs.length + " 条";
+      byId("configPagerText").textContent = "共 " + filteredConfigs.length + " 条";
+      byId("configTabCount").textContent = configData.length;
+    }
+
+    function searchConfigs() {
+      const type = byId("configType").value;
+      const status = byId("configStatus").value;
+      const risk = byId("configRisk").value;
+      const robot = byId("configRobot").value;
+      const group = byId("configGroup").value.trim();
+      filteredConfigs = configData.filter(function (item) {
+        return (!type || item.type === type) && (!status || (status === "on") === item.on) && (!risk || typeMeta[item.type].risk === risk) && (!robot || item.robot === robot) && (!group || item.group.includes(group));
+      });
+      renderConfigs();
+      toast("已找到 " + filteredConfigs.length + " 条通知配置");
+    }
+
+    function resetConfigs() {
+      ["configType", "configStatus", "configRisk", "configRobot", "configGroup"].forEach(function (id) { byId(id).value = ""; });
+      filteredConfigs = configData.slice();
+      renderConfigs();
+      toast("通知配置筛选条件已重置");
+    }
+
+    function updateModalMeta() {
+      const type = byId("modalType").value;
+      const meta = typeMeta[type];
+      if (!meta) {
+        byId("modalRisk").innerHTML = '<span class="tag gray">请选择消息类型</span><span class="muted">系统自动判定</span>';
+        byId("modalVariables").innerHTML = '<span class="muted">请选择消息类型</span>';
+        byId("modalPreview").textContent = "请选择消息类型";
+        return;
+      }
+      byId("modalRisk").innerHTML = '<span class="tag ' + riskTone[meta.risk] + '">' + meta.risk + '</span><span class="muted">系统自动判定</span>';
+      byId("modalVariables").innerHTML = meta.vars.map(function (variable) { return '<span class="chip">${' + variable + '}</span>'; }).join("");
+      if (editingConfigIndex === null && !byId("modalTemplate").value) byId("modalTemplate").value = meta.template;
+      renderPreview();
+    }
+
+    function renderPreview() {
+      const type = byId("modalType").value;
+      const text = byId("modalTemplate").value;
+      if (!type) { byId("modalPreview").textContent = "请选择消息类型"; return; }
+      byId("modalPreview").textContent = text ? text.replace(/\$\{(\w+)\}/g, function (_, variable) { return sample[variable] || "${" + variable + "}"; }) : "请输入消息模板";
+    }
+
+    function clearConfigErrors() {
+      ["modalType", "modalGroup", "modalRobot", "modalTemplate"].forEach(function (id) { byId(id).classList.remove("invalid"); });
+      ["modalTypeError", "modalGroupError", "modalRobotError", "modalTemplateError"].forEach(function (id) { byId(id).classList.remove("show"); });
+    }
+
+    function openConfigModal(index) {
+      editingConfigIndex = Number.isInteger(index) ? index : null;
+      const row = editingConfigIndex === null ? null : configData[editingConfigIndex];
+      byId("configModalTitle").textContent = row ? "修改通知配置" : "新增通知配置";
+      byId("modalType").disabled = Boolean(row);
+      byId("modalType").value = row ? row.type : "";
+      byId("modalGroup").value = row ? row.group : "";
+      byId("modalRobot").value = row ? row.robot : "";
+      byId("modalTemplate").value = row ? row.template : "";
+      clearConfigErrors();
+      updateModalMeta();
+      byId("configMask").classList.add("show");
+      window.setTimeout(function () { (row ? byId("modalGroup") : byId("modalType")).focus(); }, 20);
+    }
+
+    function closeConfigModal() {
+      byId("configMask").classList.remove("show");
+      editingConfigIndex = null;
+    }
+
+    function submitConfigModal() {
+      clearConfigErrors();
+      const values = {
+        type: byId("modalType").value,
+        group: byId("modalGroup").value.trim(),
+        robot: byId("modalRobot").value,
+        template: byId("modalTemplate").value.trim()
+      };
+      let valid = true;
+      [["type", "modalType"], ["group", "modalGroup"], ["robot", "modalRobot"], ["template", "modalTemplate"]].forEach(function (entry) {
+        if (!values[entry[0]]) {
+          valid = false;
+          byId(entry[1]).classList.add("invalid");
+          byId(entry[1] + "Error").classList.add("show");
+        }
+      });
+      if (!valid) return;
+      const allowed = new Set(typeMeta[values.type].vars);
+      const used = Array.from(values.template.matchAll(/\$\{(\w+)\}/g)).map(function (match) { return match[1]; });
+      const unsupported = used.find(function (variable) { return !allowed.has(variable); });
+      if (unsupported) {
+        byId("modalTemplate").classList.add("invalid");
+        byId("modalTemplateError").textContent = "模板包含未定义变量：${" + unsupported + "}";
+        byId("modalTemplateError").classList.add("show");
+        return;
+      }
+      const row = { type: values.type, group: values.group, robot: values.robot, template: values.template, on: editingConfigIndex === null ? true : configData[editingConfigIndex].on, time: "2026-09-02 10:30:00", special: values.type === "恶意拉单预警" };
+      const added = editingConfigIndex === null;
+      if (added) configData.unshift(row); else configData[editingConfigIndex] = row;
+      filteredConfigs = configData.slice();
+      renderConfigs();
+      closeConfigModal();
+      toast(added ? "通知配置已新增并默认启用" : "通知配置已更新，后续消息使用新版本");
+    }
+
+    function openConfirm(title, copy, action, needsReason, danger) {
+      pendingConfirm = action;
+      confirmNeedsReason = Boolean(needsReason);
+      byId("confirmTitle").textContent = title;
+      byId("confirmCopy").textContent = copy;
+      byId("confirmReasonField").hidden = !confirmNeedsReason;
+      byId("confirmReason").value = "";
+      byId("confirmReason").classList.remove("invalid");
+      byId("confirmReasonError").classList.remove("show");
+      byId("submitConfirm").classList.toggle("danger", Boolean(danger));
+      byId("submitConfirm").classList.toggle("primary", !danger);
+      byId("confirmMask").classList.add("show");
+      (confirmNeedsReason ? byId("confirmReason") : byId("submitConfirm")).focus();
+    }
+
+    function closeConfirm() {
+      byId("confirmMask").classList.remove("show");
+      pendingConfirm = null;
+    }
+
+    function exportCsv(filename, header, rows) {
+      const csv = "\ufeff" + [header].concat(rows).join("\n");
+      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      window.setTimeout(function () { URL.revokeObjectURL(url); }, 100);
+    }
+
+    document.querySelectorAll("[data-tab]").forEach(function (button) {
+      button.addEventListener("click", function () { setActiveTab(button.dataset.tab); });
+    });
+
+    byId("searchMessages").addEventListener("click", searchMessages);
+    byId("resetMessages").addEventListener("click", resetMessages);
+    byId("refreshMessages").addEventListener("click", function () { filteredMessages = messageData.slice(); renderMessages(); toast("TG 推送记录已刷新"); });
+    byId("messageGroup").addEventListener("keydown", function (event) { if (event.key === "Enter") searchMessages(); });
+    byId("exportMessages").addEventListener("click", function () {
+      exportCsv("汇盛租户端-TG推送记录.csv", "推送时间,推送事件,推送内容", filteredMessages.map(function (item) { return [item.time, item.type, renderPushedContent(item).replace(/\n/g, " / ")].join(","); }));
+      toast("已按当前筛选条件导出 TG 推送记录");
+    });
+
+    byId("searchConfigs").addEventListener("click", searchConfigs);
+    byId("resetConfigs").addEventListener("click", resetConfigs);
+    byId("refreshConfigs").addEventListener("click", function () { filteredConfigs = configData.slice(); renderConfigs(); toast("通知配置已刷新"); });
+    byId("configGroup").addEventListener("keydown", function (event) { if (event.key === "Enter") searchConfigs(); });
+    byId("addConfig").addEventListener("click", function () { openConfigModal(); });
+    byId("exportConfigs").addEventListener("click", function () {
+      exportCsv("汇盛租户端-通知配置.csv", "消息类型,风险等级,TG群ID,通知机器人,状态,更新时间", filteredConfigs.map(function (item) { return [item.type, typeMeta[item.type].risk, item.group, item.robot, item.on ? "启用" : "停用", item.time].join(","); }));
+      toast("已按当前筛选条件导出通知配置");
+    });
+
+    byId("configRows").addEventListener("click", function (event) {
+      const edit = event.target.closest("[data-config-edit]");
+      const toggle = event.target.closest("[data-config-toggle]");
+      const special = event.target.closest("[data-config-special]");
+      const remove = event.target.closest("[data-config-delete]");
+      if (edit) openConfigModal(Number(edit.dataset.configEdit));
+      if (special) {
+        byId("specialCard").hidden = false;
+        byId("specialCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      if (toggle) {
+        const index = Number(toggle.dataset.configToggle);
+        const item = configData[index];
+        openConfirm(item.on ? "停用通知配置" : "启用通知配置", (item.on ? "停用后，该目标群不再接收此消息类型。" : "启用后，后续符合条件的消息将发送到该目标群。"), function () {
+          item.on = !item.on;
+          item.time = "2026-09-02 10:34:00";
+          filteredConfigs = configData.slice();
+          renderConfigs();
+          toast(item.on ? "通知配置已启用" : "通知配置已停用");
+        }, false, !item.on);
+      }
+      if (remove) {
+        const index = Number(remove.dataset.configDelete);
+        const item = configData[index];
+        openConfirm("删除通知配置", "删除后，TG 群 " + item.group + " 不再接收「" + item.type + "」消息；历史发送记录保留。", function () {
+          configData.splice(index, 1);
+          filteredConfigs = configData.slice();
+          renderConfigs();
+          toast("通知配置已删除，历史发送记录保持不变");
+        }, true, true);
+      }
+    });
+
+    byId("modalType").addEventListener("change", function () {
+      byId("modalTemplate").value = byId("modalType").value ? typeMeta[byId("modalType").value].template : "";
+      updateModalMeta();
+    });
+    byId("modalTemplate").addEventListener("input", renderPreview);
+    byId("submitConfigModal").addEventListener("click", submitConfigModal);
+    byId("closeConfigModal").addEventListener("click", closeConfigModal);
+    byId("cancelConfigModal").addEventListener("click", closeConfigModal);
+
+    byId("closeConfirm").addEventListener("click", closeConfirm);
+    byId("cancelConfirm").addEventListener("click", closeConfirm);
+    byId("submitConfirm").addEventListener("click", function () {
+      if (confirmNeedsReason && byId("confirmReason").value.trim().length < 4) {
+        byId("confirmReason").classList.add("invalid");
+        byId("confirmReasonError").classList.add("show");
+        return;
+      }
+      const action = pendingConfirm;
+      closeConfirm();
+      if (action) action();
+    });
+
+    byId("collapseSpecial").addEventListener("click", function () { byId("specialCard").hidden = true; });
+    byId("cancelSpecial").addEventListener("click", function () { byId("specialCard").hidden = true; });
+    byId("saveSpecial").addEventListener("click", function () {
+      const values = [byId("windowSeconds"), byId("pullThreshold"), byId("ipThreshold")].map(function (input) { return Number(input.value); });
+      if (values.some(function (value) { return !Number.isFinite(value) || value < 1; })) {
+        toast("专属配置必须填写大于 0 的整数");
+        return;
+      }
+      byId("specialCard").hidden = true;
+      toast("恶意拉单预警专属配置已保存，仅影响当前租户后续事件");
+    });
+
+    [byId("configMask"), byId("confirmMask")].forEach(function (mask) {
+      mask.addEventListener("click", function (event) {
+        if (event.target !== mask) return;
+        if (mask === byId("configMask")) closeConfigModal();
+        if (mask === byId("confirmMask")) closeConfirm();
+      });
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape") return;
+      if (byId("confirmMask").classList.contains("show")) closeConfirm();
+      else if (byId("configMask").classList.contains("show")) closeConfigModal();
+    });
+
+    Object.keys(typeMeta).forEach(function (type) {
+      byId("configType").insertAdjacentHTML("beforeend", '<option>' + escapeHtml(type) + '</option>');
+      byId("modalType").insertAdjacentHTML("beforeend", '<option>' + escapeHtml(type) + '</option>');
+    });
+    renderMessages();
+    renderConfigs();
+  </script>
+</body>
+</html>

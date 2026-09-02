@@ -3,7 +3,7 @@
 - 本项目是 React + Arco Design 重构后的租户端总 Demo。
 - **可编辑源**：
   - React 壳：`src/App.jsx`、`src/embed.js`、`src/modules.js`、`src/shell.css`、`src/main.jsx`
-  - 内页业务源：`public/legacy/sources/*.html`（4 个真实文件，原样保留口径，禁止 base64 化）
+  - 内页业务源：`public/legacy/sources/*.html`（5 个真实文件，原样保留口径，禁止 base64 化）
   - 页面注册表：`src/legacy/modules.json`（22 个页面 → 源文件 + hash）
 - 修改内页时只改对应 `public/legacy/sources/<key>.html`；修改壳/导航/路由只改 React 源。
 - 禁止把页面内容重新内联回单一 HTML 或编码为 base64——可检索性是本架构的核心收益。
