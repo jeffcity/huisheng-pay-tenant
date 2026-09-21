@@ -46,6 +46,20 @@ test("租户钱包与资金划转导航及业务对象口径一致", async () =>
   assert.doesNotMatch(overviewHtml, /type: "资金申请处理"[^\n]+target: "资金申请"/);
 });
 
+test("登录页提供 2FA 已绑定与未绑定两条可验证流程", async () => {
+  const html = await readFile(path.join(root, "public/legacy/sources/login.html"), "utf8");
+  assert.match(html, /data-demo-account-state="bound"/);
+  assert.match(html, /data-demo-account-state="unbound"/);
+  assert.match(html, /admin@tenant\.example[\s\S]*?Tenant#2026[\s\S]*?246810/);
+  assert.match(html, /newadmin@tenant\.example[\s\S]*?Bind#2026[\s\S]*?135790/);
+  assert.match(html, /id="verifyPanel"/);
+  assert.match(html, /id="bindPanel"/);
+  assert.match(html, /当前账号尚未绑定验证器/);
+  assert.match(html, /模拟绑定二维码/);
+  assert.match(html, /完成绑定并进入/);
+  assert.match(html, /permissionFact\.twoFactorBound === false \? "bind" : "verify"/);
+});
+
 test("每个页面的源文件存在于 public/legacy/sources", async () => {
   const keys = new Set(Object.values(modules).map(m => m.sourceKey));
   assert.equal(keys.size, 5);
