@@ -19627,6 +19627,224 @@
       line-height: 1.6;
     }
 
+    .demo-credentials {
+      display: grid;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid rgba(20, 95, 232, 0.22);
+      border-left: 3px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      background: #f7fbff;
+    }
+
+    .brand-pane:has(.demo-credentials) {
+      gap: 20px;
+      padding: 32px;
+    }
+
+    .brand-pane:has(.demo-credentials) .trust-block {
+      margin-top: 28px !important;
+    }
+
+    .brand-pane:has(.demo-credentials) .security-list {
+      margin-top: 18px;
+      gap: 8px;
+    }
+
+    .brand-pane:has(.demo-credentials) .security-item {
+      padding: 10px;
+    }
+
+    .brand-pane .demo-credentials-list {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .brand-pane .demo-credentials-list > div:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .demo-credentials-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .demo-credentials-head strong {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+    }
+
+    .demo-credentials-head svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-primary);
+    }
+
+    .demo-credentials-head span {
+      color: var(--color-text-tertiary);
+      font-size: 12px;
+    }
+
+    .demo-state-switch {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .demo-state-option {
+      min-height: 48px !important;
+      display: grid;
+      justify-items: start;
+      gap: 2px;
+      padding: 7px 10px;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .demo-state-option:hover,
+    .demo-state-option:focus-visible {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .demo-state-option.active {
+      border-color: rgba(20, 95, 232, 0.42);
+      background: var(--color-primary-light);
+      color: #1247a6;
+    }
+
+    .demo-state-option strong {
+      font-size: 13px;
+    }
+
+    .demo-state-option small {
+      color: var(--color-text-tertiary);
+      font-size: 11px;
+    }
+
+    .demo-state-account {
+      overflow-wrap: anywhere;
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .demo-credentials-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1.75fr) repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+    }
+
+    .demo-credentials-list div {
+      min-width: 0;
+      padding: 9px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+    }
+
+    .demo-credentials-list dt {
+      margin-bottom: 3px;
+      color: var(--color-text-tertiary);
+      font-size: 11px;
+    }
+
+    .demo-credentials-list dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .binding-setup {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr);
+      gap: 16px;
+      align-items: stretch;
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-subtle);
+    }
+
+    .binding-qr {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 6px;
+      min-height: 132px;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      color: var(--color-text-primary);
+    }
+
+    .binding-qr svg {
+      width: 74px;
+      height: 74px;
+      stroke-width: 1.5;
+    }
+
+    .binding-qr span {
+      color: var(--color-text-tertiary);
+      font-size: 11px;
+    }
+
+    .binding-instructions {
+      display: grid;
+      align-content: center;
+      gap: 10px;
+    }
+
+    .binding-instructions ol {
+      display: grid;
+      gap: 5px;
+      margin: 0;
+      padding-left: 20px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .binding-key {
+      display: grid;
+      gap: 3px;
+      padding: 8px 10px;
+      border: 1px dashed var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+    }
+
+    .binding-key span,
+    .form-note {
+      color: var(--color-text-tertiary);
+      font-size: 11px;
+    }
+
+    .binding-key code {
+      overflow-wrap: anywhere;
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .form-note {
+      margin: -2px 0 0;
+      line-height: 1.55;
+    }
+
     .form {
       display: grid;
       gap: 16px;
@@ -19980,6 +20198,21 @@
       .code-row {
         grid-template-columns: repeat(3, 1fr);
       }
+      .demo-credentials-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .demo-credentials-list {
+        grid-template-columns: 1fr;
+      }
+      .demo-state-switch,
+      .binding-setup {
+        grid-template-columns: 1fr;
+      }
+      .binding-qr {
+        min-height: 118px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -20211,7 +20444,7 @@
       document.documentElement.dataset.unifiedTenantContent = "true";
       document.addEventListener("click", event => {
         if (!event.isTrusted) return;
-        const loginRoute = event.target.closest("#verifyRouteLink");
+        const loginRoute = event.target.closest("#verifyRouteLink, #bindRouteLink");
         if (!loginRoute) return;
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -20230,7 +20463,7 @@
       <button class="domain-review-option" type="button" data-review-domain="ops.hs-sea-pay.com">已停用</button>
       <button class="domain-review-option" type="button" data-review-domain="unknown.example">未登记 / 已解绑</button>
     </div>
-    <small>账号 admin@tenant.example · 密码 Tenant#2026 · 2FA 246810</small>
+    <small>已绑定 admin@tenant.example / Tenant#2026 · 未绑定 newadmin@tenant.example / Bind#2026</small>
   </aside>
   <main class="page">
     <section class="auth-shell" id="authShell">
@@ -20277,6 +20510,29 @@
             </div>
           </div>
         </div>
+        <aside class="demo-credentials" id="demoCredentials" aria-label="原型模拟登录资料">
+          <div class="demo-credentials-head">
+            <strong><i data-lucide="flask-conical"></i> 原型模拟资料</strong>
+            <span>仅供本地 Demo 流程验证</span>
+          </div>
+          <div class="demo-state-switch" role="group" aria-label="Google 2FA 绑定状态">
+            <button class="demo-state-option active" type="button" data-demo-account-state="bound" aria-pressed="true">
+              <strong>2FA 已绑定</strong>
+              <span class="demo-state-account">admin@tenant.example</span>
+              <small>密码 Tenant#2026 · 验证码 246810</small>
+            </button>
+            <button class="demo-state-option" type="button" data-demo-account-state="unbound" aria-pressed="false">
+              <strong>2FA 未绑定</strong>
+              <span class="demo-state-account">newadmin@tenant.example</span>
+              <small>密码 Bind#2026 · 首绑码 135790</small>
+            </button>
+          </div>
+          <dl class="demo-credentials-list">
+            <div><dt>登录账号</dt><dd id="demoAccountValue">admin@tenant.example</dd></div>
+            <div><dt>登录密码</dt><dd id="demoPasswordValue">Tenant#2026</dd></div>
+            <div><dt id="demoOtpLabel">Google 2FA</dt><dd id="demoOtpValue">246810</dd></div>
+          </dl>
+        </aside>
         <div class="brand-foot">汇盛支付默认安全入口。品牌配置缺省或资源不可用时，登录页回退默认品牌。</div>
       </aside>
 
@@ -20284,7 +20540,8 @@
         <div class="demo-switch" aria-label="登录状态核对">
           <button class="active" data-state="default">默认登录</button>
           <button data-state="domainUnavailable">域名不可用</button>
-          <button data-state="verify">Google 2FA</button>
+          <button data-state="verify">2FA 已绑定</button>
+          <button data-state="bind">2FA 未绑定</button>
           <button data-state="tenantDisabled">租户停用</button>
           <button data-state="whitelist">白名单阻断</button>
           <button data-state="locked">账号锁定</button>
@@ -20388,6 +20645,60 @@
                 <p id="verifyResultCopy">验证已通过，正在进入当前账号有权限访问的页面。</p>
                 <a class="primary-btn" id="verifyRouteLink" href="../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#home" style="margin-top:12px;text-decoration:none">进入租户端总览</a>
                 <button class="secondary-btn hidden" id="verifyRouteContact" type="button" style="margin-top:12px">联系租户管理员</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="bindPanel" class="hidden">
+          <div class="verify-grid">
+            <div class="alert info">
+              <i data-lucide="shield-plus"></i>
+              <div>
+                <strong>首次登录需绑定 Google 2FA</strong>
+                <p>当前账号尚未绑定验证器。完成扫描与验证码确认后，系统才会保存绑定并进入租户端后台。</p>
+              </div>
+            </div>
+            <div class="binding-setup">
+              <div class="binding-qr" aria-label="Google 2FA 模拟绑定二维码">
+                <i data-lucide="qr-code"></i>
+                <span>模拟绑定二维码</span>
+              </div>
+              <div class="binding-instructions">
+                <ol>
+                  <li>打开 Google Authenticator，扫描左侧二维码。</li>
+                  <li>无法扫描时，可手动输入下方模拟密钥。</li>
+                  <li>输入验证器显示的 6 位验证码完成绑定。</li>
+                </ol>
+                <div class="binding-key">
+                  <span>模拟绑定密钥</span>
+                  <code>JBSW Y3DP EHPK 3PXP</code>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>首次绑定验证码</label>
+              <div class="code-row" id="bindCodeRow" aria-label="首次绑定六位验证码">
+                <input maxlength="1" inputmode="numeric" aria-label="首次绑定验证码第 1 位">
+                <input maxlength="1" inputmode="numeric" aria-label="首次绑定验证码第 2 位">
+                <input maxlength="1" inputmode="numeric" aria-label="首次绑定验证码第 3 位">
+                <input maxlength="1" inputmode="numeric" aria-label="首次绑定验证码第 4 位">
+                <input maxlength="1" inputmode="numeric" aria-label="首次绑定验证码第 5 位">
+                <input maxlength="1" inputmode="numeric" aria-label="首次绑定验证码第 6 位">
+              </div>
+              <div class="error-text hidden" id="bindOtpError" role="alert">请输入有效的 6 位 Google 2FA 验证码。</div>
+              <p class="form-note">绑定成功后，该账号后续登录将进入“2FA 已绑定”验证流程。</p>
+            </div>
+            <div class="actions">
+              <button class="primary-btn" type="button" id="bindBtn"><i data-lucide="shield-check"></i> 完成绑定并进入</button>
+              <button class="secondary-btn" type="button" data-state-button="default"><i data-lucide="arrow-left"></i> 返回登录</button>
+            </div>
+            <div class="alert success hidden" id="bindResult" role="status" aria-live="polite">
+              <i data-lucide="circle-check"></i>
+              <div>
+                <strong>Google 2FA 已绑定，登录成功</strong>
+                <p id="bindResultCopy">绑定结果与登录事件已写入永久审计，正在进入当前账号有权限访问的页面。</p>
+                <a class="primary-btn" id="bindRouteLink" href="../../00-总览/00-租户端总览设计/租户端总览设计-demo.html#home" style="margin-top:12px;text-decoration:none">进入租户端总览</a>
               </div>
             </div>
           </div>
@@ -20520,6 +20831,7 @@
       default: document.getElementById("defaultPanel"),
       domainUnavailable: document.getElementById("domainUnavailablePanel"),
       verify: document.getElementById("verifyPanel"),
+      bind: document.getElementById("bindPanel"),
       tenantDisabled: document.getElementById("tenantDisabledPanel"),
       whitelist: document.getElementById("whitelistPanel"),
       locked: document.getElementById("lockedPanel"),
@@ -20561,6 +20873,19 @@
         brandName: "汇盛支付租户后台",
         brandTitle: "Google 2FA 安全验证",
         brandCopy: "首版不识别或记录异常设备；所有后台账号均需完成 Google 2FA。",
+        brandBadge: "已生效品牌",
+        brandBadgeClass: "success",
+        logo: "HS",
+        fallback: false
+      },
+      bind: {
+        title: "绑定 Google 2FA",
+        desc: "当前账号尚未绑定验证器，完成首次绑定后才能进入租户端后台。",
+        badge: "首次绑定",
+        badgeClass: "warning",
+        brandName: "汇盛支付租户后台",
+        brandTitle: "首次绑定 Google 2FA",
+        brandCopy: "账号密码通过后完成验证器绑定；绑定成功与登录结果均写入永久审计。",
         brandBadge: "已生效品牌",
         brandBadgeClass: "success",
         logo: "HS",
@@ -20624,6 +20949,11 @@
     const panelTitle = document.getElementById("panelTitle");
     const panelDesc = document.getElementById("panelDesc");
     const stateBadge = document.getElementById("stateBadge");
+    const demoCredentials = document.getElementById("demoCredentials");
+    const demoAccountValue = document.getElementById("demoAccountValue");
+    const demoPasswordValue = document.getElementById("demoPasswordValue");
+    const demoOtpLabel = document.getElementById("demoOtpLabel");
+    const demoOtpValue = document.getElementById("demoOtpValue");
     const brandName = document.getElementById("brandName");
     const brandTitle = document.getElementById("brandTitle");
     const brandCopy = document.getElementById("brandCopy");
@@ -20642,8 +20972,13 @@
     const verifyResultCopy = document.getElementById("verifyResultCopy");
     const verifyRouteLink = document.getElementById("verifyRouteLink");
     const verifyRouteContact = document.getElementById("verifyRouteContact");
-    const otpInputs = [...document.querySelectorAll(".code-row input")];
-    const validOtp = "246810";
+    const bindButton = document.getElementById("bindBtn");
+    const bindOtpError = document.getElementById("bindOtpError");
+    const bindResult = document.getElementById("bindResult");
+    const bindResultCopy = document.getElementById("bindResultCopy");
+    const bindRouteLink = document.getElementById("bindRouteLink");
+    const otpInputs = [...document.querySelectorAll("#verifyPanel .code-row input")];
+    const bindOtpInputs = [...document.querySelectorAll("#bindCodeRow input")];
     const tenantLoginNavigation = [
       { id: "directory-sentinel", label: "目录哨兵", type: "directory", pagePermission: "tenant.sentinel.directory", href: "#directory-sentinel", visible: true, enabled: true },
       { id: "hidden-sentinel", label: "隐藏页哨兵", type: "page", pagePermission: "tenant.sentinel.hidden", href: "#hidden-sentinel", visible: false, enabled: true },
@@ -20674,7 +21009,8 @@
     ];
     const allLoginPagePermissions = tenantLoginNavigation.filter(route => route.type === "page" && route.visible && route.enabled && route.href).map(route => route.pagePermission);
     const tenantLoginAccounts = new Map([
-      ["admin@tenant.example", { password: "Tenant#2026", permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-ADMIN-17", platformPagePermissions: allLoginPagePermissions, rolePagePermissions: allLoginPagePermissions }],
+      ["admin@tenant.example", { password: "Tenant#2026", demoOtp: "246810", twoFactorBound: true, permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-ADMIN-17", platformPagePermissions: allLoginPagePermissions, rolePagePermissions: allLoginPagePermissions }],
+      ["newadmin@tenant.example", { password: "Bind#2026", demoOtp: "135790", twoFactorBound: false, permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-NEW-ADMIN-01", platformPagePermissions: allLoginPagePermissions, rolePagePermissions: allLoginPagePermissions }],
       ["merchant@tenant.example", { password: "Tenant#2026", permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-MERCHANT-04", platformPagePermissions: allLoginPagePermissions, rolePagePermissions: ["tenant.merchant.view"] }],
       ["refund@tenant.example", { password: "Tenant#2026", permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-REFUND-06", platformPagePermissions: allLoginPagePermissions, rolePagePermissions: ["tenant.refund.view"] }],
       ["restricted@tenant.example", { password: "Tenant#2026", permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-RESTRICTED-03", platformPagePermissions: allLoginPagePermissions, rolePagePermissions: [] }],
@@ -20683,6 +21019,7 @@
       ["sentinel@tenant.example", { password: "Tenant#2026", permissionFactStatus: "current", platformGrantVersion: "TG-20260722-08", rolePermissionVersion: "RP-SENTINEL-01", platformPagePermissions: ["tenant.sentinel.directory", "tenant.sentinel.hidden", "tenant.sentinel.disabled", "tenant.sentinel.no_route"], rolePagePermissions: ["tenant.sentinel.directory", "tenant.sentinel.hidden", "tenant.sentinel.disabled", "tenant.sentinel.no_route"] }]
     ]);
     let authenticatedLoginAccount = "";
+    let selectedDemoAccountState = "bound";
     let toastTimer;
 
     function resolveTenantLoginRoute(account) {
@@ -20728,6 +21065,26 @@
       showToast("已切换权限账号，请重新完成账号密码和 Google 2FA");
     }
 
+    function setDemoAccountState(state, { announce = true, returnToLogin = true } = {}) {
+      selectedDemoAccountState = state === "unbound" ? "unbound" : "bound";
+      const account = selectedDemoAccountState === "unbound" ? "newadmin@tenant.example" : "admin@tenant.example";
+      const permissionFact = tenantLoginAccounts.get(account);
+      document.querySelectorAll("[data-demo-account-state]").forEach(button => {
+        const active = button.dataset.demoAccountState === selectedDemoAccountState;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      demoAccountValue.textContent = account;
+      demoPasswordValue.textContent = permissionFact.password;
+      demoOtpLabel.textContent = selectedDemoAccountState === "unbound" ? "首次绑定验证码" : "Google 2FA";
+      demoOtpValue.textContent = permissionFact.demoOtp;
+      document.getElementById("account").value = account;
+      document.getElementById("password").value = "";
+      authenticatedLoginAccount = "";
+      if (returnToLogin) setState("default");
+      if (announce) showToast(selectedDemoAccountState === "unbound" ? "已切换到 2FA 未绑定账号" : "已切换到 2FA 已绑定账号");
+    }
+
     function setBadge(el, text, className, iconName) {
       el.className = "badge " + className;
       el.innerHTML = '<i data-lucide="' + iconName + '"></i> ' + text;
@@ -20758,6 +21115,7 @@
       brandLogo.textContent = copy.logo;
       authShell.classList.toggle("fallback", copy.fallback);
       authShell.classList.toggle("domain-unavailable", state === "domainUnavailable");
+      demoCredentials.classList.toggle("hidden", state !== "default" && state !== "verify" && state !== "bind");
       brandDomain.textContent = requestedDomain;
 
       setBadge(stateBadge, copy.badge, copy.badgeClass, copy.badgeClass === "danger" ? "circle-alert" : "lock-keyhole");
@@ -20765,16 +21123,23 @@
 
       formError.classList.add("hidden");
       otpError.classList.add("hidden");
+      bindOtpError.classList.add("hidden");
       ["account", "password", "fallbackAccount", "fallbackPassword"].forEach(id => {
         window.HSFormFeedback?.clear(document.getElementById(id));
       });
       otpInputs.forEach(input => window.HSFormFeedback?.clear(input));
+      bindOtpInputs.forEach(input => window.HSFormFeedback?.clear(input));
       document.getElementById("password").value = "";
       document.getElementById("fallbackPassword").value = "";
       otpInputs.forEach(input => { input.value = ""; });
+      bindOtpInputs.forEach(input => { input.value = ""; });
       if (state !== "verify") {
         verifyResult.classList.add("hidden");
         verifyButton.disabled = false;
+      }
+      if (state !== "bind") {
+        bindResult.classList.add("hidden");
+        bindButton.disabled = false;
       }
 
       if (window.lucide) window.lucide.createIcons();
@@ -20782,9 +21147,21 @@
 
     switchButtons.forEach(button => {
       button.addEventListener("click", () => {
+        if (button.dataset.state === "verify") {
+          setDemoAccountState("bound", { announce: false, returnToLogin: false });
+          authenticatedLoginAccount = "admin@tenant.example";
+        }
+        if (button.dataset.state === "bind") {
+          setDemoAccountState("unbound", { announce: false, returnToLogin: false });
+          authenticatedLoginAccount = "newadmin@tenant.example";
+        }
         setState(button.dataset.state);
         showToast("已切换到 " + button.textContent + " 状态");
       });
+    });
+
+    document.querySelectorAll("[data-demo-account-state]").forEach(button => {
+      button.addEventListener("click", () => setDemoAccountState(button.dataset.demoAccountState));
     });
 
     document.querySelectorAll("[data-state-button]").forEach(button => {
@@ -20824,18 +21201,23 @@
         authenticatedLoginAccount = account;
         passwordInput.value = "";
         otpInputs.forEach(input => { input.value = ""; });
+        bindOtpInputs.forEach(input => { input.value = ""; });
         verifyResult.classList.add("hidden");
         verifyButton.disabled = false;
-        setState("verify");
-        otpInputs[0].focus();
-        showToast("账号密码已通过，进入 Google 2FA 验证");
+        bindResult.classList.add("hidden");
+        bindButton.disabled = false;
+        const nextState = permissionFact.twoFactorBound === false ? "bind" : "verify";
+        setState(nextState);
+        (nextState === "bind" ? bindOtpInputs[0] : otpInputs[0]).focus();
+        showToast(nextState === "bind" ? "账号密码已通过，进入 Google 2FA 首次绑定" : "账号密码已通过，进入 Google 2FA 验证");
       }, 320);
     });
 
     document.getElementById("verifyBtn").addEventListener("click", () => {
       const otp = otpInputs.map(input => input.value).join("");
+      const expectedOtp = tenantLoginAccounts.get(authenticatedLoginAccount)?.demoOtp || "246810";
       otpError.classList.add("hidden");
-      if (!/^\d{6}$/.test(otp) || otp !== validOtp) {
+      if (!/^\d{6}$/.test(otp) || otp !== expectedOtp) {
         otpError.textContent = /^\d{6}$/.test(otp) ? "验证码不正确或已过期，请重新输入。" : "请输入完整的 6 位 Google 2FA 验证码。";
         otpError.classList.remove("hidden");
         otpInputs.forEach(input => { input.value = ""; });
@@ -20864,6 +21246,41 @@
         : "账号、密码和 Google 2FA 已通过；登录事件已写入永久审计。";
       setBadge(stateBadge, route.noPermission ? "无页面权限" : "登录通过", route.noPermission ? "warning" : "success", route.noPermission ? "shield-alert" : "circle-check-2");
       showToast(route.noPermission ? "认证成功，但当前账号无可访问页面" : `登录成功，已定位到${route.action.replace("进入", "")}`);
+      if (window.lucide) window.lucide.createIcons();
+    });
+
+    bindButton.addEventListener("click", () => {
+      const otp = bindOtpInputs.map(input => input.value).join("");
+      const expectedOtp = tenantLoginAccounts.get(authenticatedLoginAccount)?.demoOtp || "135790";
+      bindOtpError.classList.add("hidden");
+      if (!/^\d{6}$/.test(otp) || otp !== expectedOtp) {
+        bindOtpError.textContent = /^\d{6}$/.test(otp) ? "验证码不正确或已过期，请重新输入。" : "请输入完整的 6 位首次绑定验证码。";
+        bindOtpError.classList.remove("hidden");
+        bindOtpInputs.forEach(input => { input.value = ""; });
+        window.HSFormFeedback?.report(bindOtpError.textContent, bindOtpInputs[0], bindOtpError);
+        return;
+      }
+      bindOtpInputs.forEach(input => { input.value = ""; });
+      bindButton.disabled = true;
+      const route = resolveTenantLoginRoute(authenticatedLoginAccount);
+      bindResult.className = `alert ${route.noPermission ? "warning" : "success"}`;
+      bindResultCopy.textContent = route.noPermission
+        ? "Google 2FA 已绑定，但当前账号没有任何可访问页面，请联系租户管理员。"
+        : `Google 2FA 已绑定；${route.copy}`;
+      bindRouteLink.classList.toggle("hidden", Boolean(route.noPermission));
+      if (!route.noPermission) {
+        bindRouteLink.textContent = route.action;
+        bindRouteLink.setAttribute("href", route.href);
+      } else {
+        bindRouteLink.removeAttribute("href");
+      }
+      bindResult.classList.remove("hidden");
+      panelTitle.textContent = route.noPermission ? "绑定成功，但无可访问页面" : "Google 2FA 已绑定，登录成功";
+      panelDesc.textContent = route.noPermission
+        ? "首次绑定已完成，但当前账号没有任何可访问页面。"
+        : "首次绑定与登录事件已写入永久审计。";
+      setBadge(stateBadge, route.noPermission ? "无页面权限" : "绑定并登录通过", route.noPermission ? "warning" : "success", route.noPermission ? "shield-alert" : "circle-check-2");
+      showToast(route.noPermission ? "绑定成功，但当前账号无可访问页面" : `绑定成功，已定位到${route.action.replace("进入", "")}`);
       if (window.lucide) window.lucide.createIcons();
     });
 
@@ -20929,18 +21346,24 @@
       showToast(input.type === "password" ? "已隐藏密码" : "已显示密码");
     });
 
-    otpInputs.forEach((input, index, all) => {
-      input.addEventListener("input", () => {
-        input.value = input.value.replace(/\D/g, "").slice(0, 1);
-        otpError.classList.add("hidden");
-        if (input.value && all[index + 1]) all[index + 1].focus();
+    function wireOtpInputs(inputs, errorNode) {
+      inputs.forEach((input, index, all) => {
+        input.addEventListener("input", () => {
+          input.value = input.value.replace(/\D/g, "").slice(0, 1);
+          errorNode.classList.add("hidden");
+          if (input.value && all[index + 1]) all[index + 1].focus();
+        });
+        input.addEventListener("keydown", event => {
+          if (event.key === "Backspace" && !input.value && all[index - 1]) all[index - 1].focus();
+        });
       });
-      input.addEventListener("keydown", event => {
-        if (event.key === "Backspace" && !input.value && all[index - 1]) all[index - 1].focus();
-      });
-    });
+    }
+
+    wireOtpInputs(otpInputs, otpError);
+    wireOtpInputs(bindOtpInputs, bindOtpError);
 
     setState(resolvedDomain?.status === "可用" ? "default" : "domainUnavailable");
+    if (resolvedDomain?.status === "可用") setDemoAccountState("bound", { announce: false, returnToLogin: false });
     if (window.lucide) window.lucide.createIcons();
   </script>
   <script>
